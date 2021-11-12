@@ -1,0 +1,333 @@
+{
+    "@@last_modified": "2021-05-17T11:30:46.995067",
+    "loginButtonNext": "Tiếp theo",
+    "@loginButtonNext": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverPageTitle": "Khôi phục quyền truy cập",
+    "@recoverPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverPagesMessageLogin": "Để đặt lại mật khẩu của bạn, vui lòng nhập địa chỉ email bạn đã đăng ký.",
+    "@recoverPagesMessageLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverSendEmailPageMessage": "Chúng tôi đã gửi cho bạn một email với thông tin về cách đặt lại mật khẩu của bạn",
+    "@recoverSendEmailPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverSendEmailPageButtonText": "OK",
+    "@recoverSendEmailPageButtonText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPassNotFoundEmail": "Chúng tôi không thể tìm thấy tài khoản có địa chỉ email đó",
+    "@recoveryPassNotFoundEmail": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPassExpireToken": "Liên kết đã hết hạn, vui lòng thử đổi lại mật khẩu của bạn",
+    "@recoveryPassExpireToken": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPassTokenAlreadyUsed": "Liên kết đặt lại mật khẩu này đã được sử dụng",
+    "@recoveryPassTokenAlreadyUsed": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPagesMessagePasswordAgain": "Vui lòng nhập lại mật khẩu của bạn",
+    "@recoveryPagesMessagePasswordAgain": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPagesPassChangedAlertInfo": "Mật khẩu của bạn đã được thay đổi!",
+    "@recoveryPagesPassChangedAlertInfo": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "sentConfirmEmailAlertText": "Một email xác nhận đã được gửi đến địa chỉ email của bạn",
+    "@sentConfirmEmailAlertText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageValidatorEmptyPassword": "Vui lòng nhập mật khẩu",
+    "@authPageValidatorEmptyPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageValidatorPassword": "Mật khẩu không đúng",
+    "@authPageValidatorPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageValidatorComparePassword": "Mật khẩu không khớp",
+    "@authPageValidatorComparePassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageInputPassword": "Mật khẩu",
+    "@authPageInputPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageTitle": "Đăng ký",
+    "@authPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPageTitle": "Đăng nhập",
+    "@signInPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPageRecovery": "Quên mật khẩu?",
+    "@signInPageRecovery": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageButtonRegistration": "Đăng ký",
+    "@authPageButtonRegistration": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageTitle": "Đăng ký",
+    "@signUpPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPagesMessageLogin": "Nhập địa chỉ email của bạn",
+    "@signUpPagesMessageLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPagesMessagePassword": "Tạo một mật khẩu",
+    "@signUpPagesMessagePassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPagesMessagePasswordAgain": "Vui lòng nhập lại mật khẩu của bạn",
+    "@signUpPagesMessagePasswordAgain": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailConfirmMessage": "Địa chỉ email của bạn đã được xác nhận",
+    "@signUpPageEmailConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailNotConfirmMessage": "Bạn chưa xác nhận địa chỉ email này. Gửi lại email xác nhận?",
+    "@signUpPageEmailNotConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailExpiredLinkMessage": "Liên kết xác minh email của bạn đã hết hạn. Bạn có muốn gửi lại liên kết đó không?",
+    "@signUpPageEmailExpiredLinkMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profilePageRemindEmailConfirmMessage": "Email của bạn chưa được xác nhận. Để xác nhận, vui lòng nhấp vào liên kết được gửi đến địa chỉ email bạn đã sử dụng để đăng ký",
+    "@profilePageRemindEmailConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailNotConfirmButtonSend": "Gửi",
+    "@signUpPageEmailNotConfirmButtonSend": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageSuccessConfirmMessage": "Chúng tôi đã gửi cho bạn một email xác nhận.",
+    "@signUpPageSuccessConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageSuccessConfirmTitle": "Xin cảm ơn, bây giờ bạn đã được đăng ký.",
+    "@signUpPageSuccessConfirmTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageButtonLogin": "Đăng nhập",
+    "@authPageButtonLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageLoginWithMessage": "Đăng nhập với",
+    "@authPageLoginWithMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "continueWithoutAccount": "Tiếp tục mà không cần tạo tài khoản",
+    "@continueWithoutAccount": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageRetryLogin": "Không thể đăng nhập, vui lòng thử lại!",
+    "@authPageRetryLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageRetryBtn": "Thử lại",
+    "@authPageRetryBtn": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageMessage": "Đăng ký để lưu thông tin của bạn",
+    "@authPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPagesMessageLogin": "Vui lòng nhập địa chỉ email bạn đã đăng ký",
+    "@signInPagesMessageLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPagesMessagePassword": "Nhập mật khẩu của bạn",
+    "@signInPagesMessagePassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPageLoginSuccessAlert": "Đăng nhập thành công",
+    "@signInPageLoginSuccessAlert": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "sendEmailPageMessage": "Thư của bạn đã được gửi đi! Bạn sẽ sớm nhận được hồi âm.",
+    "@sendEmailPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "sendEmailPageButtonText": "OK",
+    "@sendEmailPageButtonText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "inputEmailLabel": "Địa chỉ email",
+    "@inputEmailLabel": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginValidatorInvalidEmail": "Địa chỉ email không hợp lệ",
+    "@loginValidatorInvalidEmail": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginValidatorEmptyEmail": "Vui lòng nhập địa chỉ email của bạn",
+    "@loginValidatorEmptyEmail": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginSync": "Đang đồng bộ hóa dữ liệu...",
+    "@loginSync": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterPassPageTitle": "Đổi mật khẩu",
+    "@profileEnterPassPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterOldPassPageMessage": "Bạn phải nhập mật khẩu hiện tại của mình trước khi có thể đổi mật khẩu",
+    "@profileEnterOldPassPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterNewPassPageMessage": "Tạo một mật khẩu mới",
+    "@profileEnterNewPassPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterNewPassAgainPageMessage": "Vui lòng nhập lại mật khẩu của bạn",
+    "@profileEnterNewPassAgainPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profilePassChangedAlertInfo": "Mật khẩu của bạn đã được thay đổi!",
+    "@profilePassChangedAlertInfo": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailPageTitle": "Thay đổi địa chỉ email",
+    "@profileChangeEmailPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailEnterPassPageText": "Nhập mật khẩu của bạn để thay đổi địa chỉ email",
+    "@profileChangeEmailEnterPassPageText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailEnterEmailPageText": "Nhập địa chỉ email mới của bạn",
+    "@profileChangeEmailEnterEmailPageText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailAlertText": "Một email xác nhận đã được gửi đến địa chỉ email của bạn",
+    "@profileChangeEmailAlertText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailErrorEmailBusy": "Địa chỉ email bạn nhập đã được sử dụng. Nếu đó là địa chỉ email của bạn, hãy sử dụng nó để đăng nhập vào hồ sơ của bạn.",
+    "@profileChangeEmailErrorEmailBusy": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailErrorInvalidPassword": "Mật khẩu không đúng. Vui lòng thử lại.",
+    "@profileChangeEmailErrorInvalidPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailErrorUnknown": "Đã xảy ra lỗi không mong muốn. Vui lòng kiểm tra kết nối internet của bạn và thử lại.",
+    "@profileChangeEmailErrorUnknown": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveButton": "Xóa hồ sơ",
+    "@profileRemoveButton": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileResendRemoveConfirmCode": "Mã gửi lại",
+    "@profileResendRemoveConfirmCode": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveConfirm": "Bạn sắp xóa tài khoản của mình và toàn bộ dữ liệu trong đó. Hành động này không thể được hoàn tác. Bạn có muốn tiếp tục?",
+    "@profileRemoveConfirm": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveCodeSent": "Một mã xác nhận đã được gửi đến địa chỉ email của bạn. Nhập mã xác nhận đó vào bên dưới để xóa hồ sơ của bạn.",
+    "@profileRemoveCodeSent": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveCodeReSent": "Một mã mới đã được gửi đến email của bạn",
+    "@profileRemoveCodeReSent": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginValidatorEmptyConfirmCode": "Vui lòng nhập mã xác nhận",
+    "@loginValidatorEmptyConfirmCode": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveCodeFailure": "Mã xác nhận không chính xác. Nếu bạn chưa nhận được mã xác nhận hoặc đã xóa email, vui lòng sử dụng tùy chọn gửi lại.",
+    "@profileRemoveCodeFailure": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveFailure": "Lỗi khi xóa hồ sơ, vui lòng thử lại sau.",
+    "@profileRemoveFailure": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "autoLogoutInfo": "Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại vào tài khoản của bạn.",
+    "@autoLogoutInfo": {
+        "type": "text",
+        "placeholders": {}
+    }
+}

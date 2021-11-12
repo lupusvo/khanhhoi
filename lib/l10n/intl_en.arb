@@ -1,0 +1,333 @@
+{
+    "@@last_modified": "2021-05-17T11:30:46.843339",
+    "loginButtonNext": "Next",
+    "@loginButtonNext": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverPageTitle": "Recover access",
+    "@recoverPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverPagesMessageLogin": "To reset your password, please enter the email address you registered with.",
+    "@recoverPagesMessageLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverSendEmailPageMessage": "We have sent you an email with information on how to reset your password",
+    "@recoverSendEmailPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoverSendEmailPageButtonText": "OK",
+    "@recoverSendEmailPageButtonText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPassNotFoundEmail": "We couldn't find an account with that email address",
+    "@recoveryPassNotFoundEmail": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPassExpireToken": "The link expired, please try to change your password again",
+    "@recoveryPassExpireToken": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPassTokenAlreadyUsed": "This password reset link has already been used",
+    "@recoveryPassTokenAlreadyUsed": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPagesMessagePasswordAgain": "Please re-enter your password",
+    "@recoveryPagesMessagePasswordAgain": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "recoveryPagesPassChangedAlertInfo": "Your password has been changed!",
+    "@recoveryPagesPassChangedAlertInfo": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "sentConfirmEmailAlertText": "A confirmation email has been sent to your email address",
+    "@sentConfirmEmailAlertText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageValidatorEmptyPassword": "Please enter your password",
+    "@authPageValidatorEmptyPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageValidatorPassword": "Incorrect password",
+    "@authPageValidatorPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageValidatorComparePassword": "Passwords do not match",
+    "@authPageValidatorComparePassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageInputPassword": "Password",
+    "@authPageInputPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageTitle": "Sign up",
+    "@authPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPageTitle": "Log in",
+    "@signInPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPageRecovery": "Forgot your password?",
+    "@signInPageRecovery": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageButtonRegistration": "Sign up",
+    "@authPageButtonRegistration": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageTitle": "Sign up",
+    "@signUpPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPagesMessageLogin": "Enter your email address",
+    "@signUpPagesMessageLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPagesMessagePassword": "Create a password",
+    "@signUpPagesMessagePassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPagesMessagePasswordAgain": "Please re-enter your password",
+    "@signUpPagesMessagePasswordAgain": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailConfirmMessage": "Your email address has been confirmed",
+    "@signUpPageEmailConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailNotConfirmMessage": "You haven't confirmed this email address. Resend confirmation email?",
+    "@signUpPageEmailNotConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailExpiredLinkMessage": "Your email verification link has expired. Do you want to re-send it?",
+    "@signUpPageEmailExpiredLinkMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profilePageRemindEmailConfirmMessage": "Your email has not been confirmed. To confirm it, please click the link that was sent to the email address you used to sign up",
+    "@profilePageRemindEmailConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageEmailNotConfirmButtonSend": "Send",
+    "@signUpPageEmailNotConfirmButtonSend": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageSuccessConfirmMessage": "We have sent you a confirmation email.",
+    "@signUpPageSuccessConfirmMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signUpPageSuccessConfirmTitle": "Thank you, you are now signed up.",
+    "@signUpPageSuccessConfirmTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageButtonLogin": "Log in",
+    "@authPageButtonLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageLoginWithMessage": "Log in with",
+    "@authPageLoginWithMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "continueWithoutAccount": "Continue without creating an account",
+    "@continueWithoutAccount": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageRetryLogin": "Unable to login, please try again!",
+    "@authPageRetryLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageRetryBtn": "Try again",
+    "@authPageRetryBtn": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "authPageMessage": "Sign up to save your information",
+    "@authPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPagesMessageLogin": "Please enter the email address you registered with",
+    "@signInPagesMessageLogin": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPagesMessagePassword": "Enter your password",
+    "@signInPagesMessagePassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "signInPageLoginSuccessAlert": "Log in successful",
+    "@signInPageLoginSuccessAlert": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "sendEmailPageMessage": "Your message has been sent!\nYou will receive a reply soon.",
+    "@sendEmailPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "sendEmailPageButtonText": "OK",
+    "@sendEmailPageButtonText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "inputEmailLabel": "Email address",
+    "@inputEmailLabel": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginValidatorInvalidEmail": "Invalid email address",
+    "@loginValidatorInvalidEmail": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginValidatorEmptyEmail": "Please enter your email address",
+    "@loginValidatorEmptyEmail": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginSync": "Syncing data...",
+    "@loginSync": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterPassPageTitle": "Change password",
+    "@profileEnterPassPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterOldPassPageMessage": "You must enter your current password before you can change it",
+    "@profileEnterOldPassPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterNewPassPageMessage": "Create a new password",
+    "@profileEnterNewPassPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileEnterNewPassAgainPageMessage": "Please re-enter your password",
+    "@profileEnterNewPassAgainPageMessage": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profilePassChangedAlertInfo": "Your password has been changed!",
+    "@profilePassChangedAlertInfo": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailPageTitle": "Change email address",
+    "@profileChangeEmailPageTitle": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailEnterPassPageText": "Enter your password to change your email address",
+    "@profileChangeEmailEnterPassPageText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailEnterEmailPageText": "Enter your new email address",
+    "@profileChangeEmailEnterEmailPageText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailAlertText": "A confirmation email has been sent to your email address",
+    "@profileChangeEmailAlertText": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailErrorEmailBusy": "The email address you entered is already in use. If it is your email address, use it to sign in to your profile.",
+    "@profileChangeEmailErrorEmailBusy": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailErrorInvalidPassword": "Incorrect password. Please try again.",
+    "@profileChangeEmailErrorInvalidPassword": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileChangeEmailErrorUnknown": "An unexpected error occurred. Please check your internet connection and try again.",
+    "@profileChangeEmailErrorUnknown": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveButton": "Delete profile",
+    "@profileRemoveButton": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileResendRemoveConfirmCode": "Resend code",
+    "@profileResendRemoveConfirmCode": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveConfirm": "You are about to delete your account and all its data. This action cannot be undone. Do you want to continue?",
+    "@profileRemoveConfirm": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveCodeSent": "A confirmation code has been sent to your email address. Enter it below to delete your profile.",
+    "@profileRemoveCodeSent": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveCodeReSent": "A new code has been sent to your email",
+    "@profileRemoveCodeReSent": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "loginValidatorEmptyConfirmCode": "Please enter the confirmation code",
+    "@loginValidatorEmptyConfirmCode": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveCodeFailure": "Incorrect confirmation code. If you did not receive a confirmation code or deleted the email, please use the resend option.",
+    "@profileRemoveCodeFailure": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "profileRemoveFailure": "Error deleting profile, please try again later.",
+    "@profileRemoveFailure": {
+        "type": "text",
+        "placeholders": {}
+    },
+    "autoLogoutInfo": "Your session has expired. Please log in to your account again.",
+    "@autoLogoutInfo": {
+        "type": "text",
+        "placeholders": {}
+    }
+}
