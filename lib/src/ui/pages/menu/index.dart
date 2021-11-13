@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sea_demo01/src/repositories/categories_list.dart'
     as categoriesList;
+import 'package:sea_demo01/src/ui/pages/user/login_page.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -94,7 +95,12 @@ class _MenuPageState extends State<MenuPage> {
                           ),
                         ],
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
+                      },
                     ),
                   ),
                 );

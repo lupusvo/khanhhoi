@@ -1,18 +1,19 @@
 import 'dart:convert';
 
+import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sea_demo01/generated/l10n.dart';
+import 'package:sea_demo01/src/blocs/Login/auth_bloc.dart';
 import 'package:sea_demo01/src/repositories/InfoUserByUserName.dart';
-import 'package:sea_demo01/src/repositories/login_bloc.dart';
 import 'package:sea_demo01/src/ui/compoment/compoment.dart';
 import 'package:sea_demo01/src/ui/screen.dart';
 import 'package:sea_demo01/src/ui/themes/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dart_ipify/dart_ipify.dart';
-import 'index.dart';
 import 'package:http/http.dart' as http;
+import 'index.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -22,50 +23,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  LoginBloc bloc = new LoginBloc();
+  TextEditingController _userController = new TextEditingController();
+  TextEditingController _passController = new TextEditingController();
+  bool _isLoading = false;
   double _headerHeight = 250;
   Key _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
   InfoUserByUserName _infoUserByUserName = new InfoUserByUserName();
-  TextEditingController _userControler = new TextEditingController();
-  TextEditingController _passControler = new TextEditingController();
-  LoginBloc bloc = new LoginBloc();
-
-  signIn(String UserName, String PassWord, int Type) async {
-    var url = Uri.parse('https://i-sea.khanhhoi.net/home/login');
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    final String ip = await Ipify.ipv4().toString();
-    Map<String, String> requestHeaders = {
-      'ClientIP': ip,
-    };
-    Map body = {"UserName_": UserName, "pass_": PassWord, "type_": Type};
-    var jsonResponse;
-    var res = await http.post(url, headers: requestHeaders, body: json.encode(body));
-    if (bloc.isValidInfo(_userControler.text, _passControler.text)) {
-      if (res.statusCode == 200) {
-        jsonResponse = json.decode(res.body);
-        if (jsonResponse != null) {
-          setState(() {
-            _isLoading = false;
-          });
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setString('token', jsonResponse.toString());
-          prefs.setString('user', UserName.toString());
-          await _infoUserByUserName.getInfoUserByUserName();
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ScreenMain()));
-        } else {
-          Fluttertoast.showToast(
-              msg: "Tài khoản hoặc mật khẩu không đúng. Vui lòng nhập lại!",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color.fromRGBO(70, 70, 70, 1.0),
-              textColor: Colors.white,
-              fontSize: 12.0);
-        }
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,18 +66,18 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Container(
                                 child: StreamBuilder(
-                                    stream: bloc.userStream,
-                                    builder: (context, snapshot) => TextField(
-                                          controller: _userControler,
-                                          decoration:
-                                              ThemeHelper().textInputDecoration(
+                                  stream: bloc.userStream,
+                                  builder: (context, snapshot) => TextField(
+                                    controller: _userController,
+                                    decoration: ThemeHelper()
+                                        .textInputDecoration(
                                             'User Name',
                                             'Enter your user name',
                                             snapshot.hasError
-                                                ? snapshot.error.toString()
-                                                : null,
-                                          ),
-                                        )),
+                                                ? snapshot.error
+                                                : null),
+                                  ),
+                                ),
                                 decoration:
                                     ThemeHelper().inputBoxDecorationShaddow(),
                               ),
@@ -121,19 +85,20 @@ class _LoginPageState extends State<LoginPage> {
                               Container(
                                 child: StreamBuilder(
                                   stream: bloc.passStream,
-                                  builder: (context,snapshot) => TextField(
-                                  obscureText: true,
-                                  controller: _passControler,
-                                  decoration: ThemeHelper().textInputDecoration(
-                                    S.of(context).authPageInputPassword,
-                                    S
-                                        .of(context)
-                                        .authPageValidatorEmptyPassword,
-                                    snapshot.hasError
-                                                ? snapshot.error.toString()
-                                                : null,
+                                  builder: (context, snapshot) => TextField(
+                                    obscureText: true,
+                                    controller: _passController,
+                                    decoration: ThemeHelper()
+                                        .textInputDecoration(
+                                            S.of(context).authPageInputPassword,
+                                            S
+                                                .of(context)
+                                                .authPageValidatorEmptyPassword,
+                                            snapshot.hasError
+                                                ? snapshot.error
+                                                : null),
                                   ),
-                                )),
+                                ),
                                 decoration:
                                     ThemeHelper().inputBoxDecorationShaddow(),
                               ),
@@ -150,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                                               ForgotPasswordPage()),
                                     );
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     "Forgot your password?",
                                     style: TextStyle(
                                       color: Colors.grey,
@@ -171,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                                           .of(context)
                                           .authPageButtonLogin
                                           .toUpperCase(),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white),
@@ -182,8 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                                     setState(() {
                                       _isLoading = true;
                                     });
-                                    signIn(_userControler.text,
-                                        _passControler.text, 3);
+                                    onSignInClicked(_userController.text,
+                                        _passController.text, 3);
                                   },
                                 ),
                               ),
@@ -217,5 +182,51 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<void> onSignInClicked(
+      String UserName, String PassWord, int Type) async {
+    if (bloc.isValidInfo(_userController.text, _passController.text)) {
+      var url = Uri.parse('https://i-sea.khanhhoi.net/home/login');
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      final String ip = await Ipify.ipv4().toString();
+      Map<String, String> requestHeaders = {
+        'ClientIP': ip,
+      };
+      Map body = {"UserName_": UserName, "pass_": PassWord, "type_": Type};
+      var jsonResponse;
+      var res = await http.post(url,headers: requestHeaders, body: json.encode(body));
+      if (res.statusCode == 200) {
+        jsonResponse = json.decode(res.body);
+        if (jsonResponse != null) {
+          setState(() {
+            _isLoading = false;
+          });
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('token', jsonResponse.toString());
+          prefs.setString('user', UserName.toString());
+          await _infoUserByUserName.getInfoUserByUserName();
+          SmartDialog.showLoading(
+            backDismiss: false,
+            background: Colors.teal,
+            msg: 'Đang tải',
+          );
+          await Future.delayed(Duration(seconds: 2));
+          SmartDialog.dismiss();
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => ScreenMain()));
+        } else {
+          Fluttertoast.showToast(
+              msg: "Tài khoản hoặc mật khẩu không đúng. Vui lòng nhập lại!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Color.fromRGBO(70, 70, 70, 1.0),
+              textColor: Colors.white,
+              fontSize: 12.0);
+        }
+      }
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:sea_demo01/LanguageChangeProvider.dart';
@@ -42,6 +43,8 @@ class MyApp extends StatelessWidget {
               child: SplashScreen(title: 'Flutter Login UI'),
             ),
           ),
+          navigatorObservers: [FlutterSmartDialog.observer],
+          builder: FlutterSmartDialog.init(),
         ),
       ),
     );

@@ -24,7 +24,7 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
         alignment: Alignment.bottomCenter,
         child: Container(
           margin: EdgeInsets.all(20),
-          height: 90,
+          height: 100,
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -48,43 +48,71 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              padding: const EdgeInsets.fromLTRB(1, 0, 6, 0),
                               child: Icon(
                                 Icons.circle,
                                 color: widget.currentlySelectedPin.labelColor,
-                                size: 12,
+                                size: 10,
                               ),
                             ),
-                            Text(widget.currentlySelectedPin.vehicalNumber,
-                                style: TextStyle(
-                                    color: widget
-                                        .currentlySelectedPin.labelColor)),
+                            Text(
+                              widget.currentlySelectedPin.vehicalNumber,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      widget.currentlySelectedPin.labelColor),
+                            ),
                           ],
                         ),
                         const SizedBox(
                           height: 5, // default\minimum height
                         ),
-                        Text(
-                            'Cập nhật: ${widget.currentlySelectedPin.timeSave}',
-                            style: TextStyle(
-                                fontSize: 12, color: Colors.grey.shade700)),
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: Icon(
+                                Icons.watch_later,
+                                color: Colors.grey.shade700,
+                                size: 12,
+                              ),
+                            ),
+                            Text(
+                              widget.currentlySelectedPin.timeSave,
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey.shade700),
+                            ),
+                          ],
+                        ),
                         const SizedBox(
                           height: 3, // default\minimum height
                         ),
-                        Text(
-                            'Vị trí: ${widget.currentlySelectedPin.location.latitude.toString()}, ${widget.currentlySelectedPin.location.longitude.toString()}',
-                            style: TextStyle(
-                                fontSize: 12, color: Colors.grey.shade700)),
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: Icon(
+                                Icons.location_on,
+                                color: Colors.grey.shade700,
+                                size: 12,
+                              ),
+                            ),
+                            Text(
+                              '${widget.currentlySelectedPin.location.latitude.toString()}, ${widget.currentlySelectedPin.location.longitude.toString()}',
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey.shade700),
+                            ),
+                          ],
+                        ),
                         SizedBox(
                           height: 3, // default\minimum height
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.55,
+                          width: MediaQuery.of(context).size.width * 0.6,
                           child: Text(
-                            'Địa chỉ: ${widget.currentlySelectedPin.address}',
+                            widget.currentlySelectedPin.address,
                             style: TextStyle(
                                 fontSize: 12, color: Colors.grey.shade700),
                             maxLines: 2,

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:sea_demo01/src/repositories/AllShip.dart';
+import 'package:sea_demo01/src/model/shipuser_model.dart';
+import 'package:sea_demo01/src/repositories/all_ship.dart';
 import 'package:sea_demo01/src/repositories/pin_pill_info.dart';
 import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
-
 
 class MapGoogle extends StatefulWidget {
   const MapGoogle({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ const LatLng DEST_LOCATION = LatLng(10.01450, 105.77900);
 
 class _MapGoogleState extends State<MapGoogle> {
   Completer<GoogleMapController> _controller = Completer();
-  Set<Marker> _markers = {};
+  Set<Marker> _markers = Set();
   Set<Polyline> _polylines = {};
   List<LatLng> polylineCoordinates = [];
   final _allShip = new AllShip();
@@ -42,118 +42,7 @@ class _MapGoogleState extends State<MapGoogle> {
     timeSave: '',
   );
   late PinInformation sourcePinInfo;
-  late PinInformation _sourcePinInfo;
   late PinInformation destinationPinInfo;
-
-  @override
-  void initState() {
-    super.initState();
-    setSourceAndDestinationIcons();
-  }
-
-  void setMapPins() async{
-    String _status = "";
-    await _allShip.getAllShipByUserId();
-    _markers.add(Marker(
-        // This marker id can be anything that uniquely identifies each marker.
-        markerId: MarkerId( _allShip.allShipByUserId[0].imei),
-        position: LatLng(_allShip.allShipByUserId[0].latitude,_allShip.allShipByUserId[0].longitude),
-        onTap: () {
-          setState(() {
-            currentlySelectedPin = sourcePinInfo;
-            pinPillPosition = 0;
-          });
-        },
-        icon: sourceIcon));
-
-    if(_allShip.allShipByUserId[0].isActive == true){
-      _status = "Hoạt động";
-    }else{
-      _status = "Mất tín hiệu";
-    }
-
-    sourcePinInfo = PinInformation(
-      vehicalNumber: _allShip.allShipByUserId[0].tentau,
-      location: LatLng(_allShip.allShipByUserId[0].latitude,_allShip.allShipByUserId[0].longitude),
-      pinPath: "assets/icons/driving_pin.png",
-      avatarPath: "assets/images/friend1.jpg",
-      labelColor: Colors.blueAccent,
-      address: 'Phường 12, Thành phố Vũng Tầu, Bà Rịa - Vũng Tàu, Việt Nam',
-      status: _status,
-      timeSave: _allShip.allShipByUserId[0].dateSave,
-    );
-    
-    _markers.add(Marker(
-        // This marker id can be anything that uniquely identifies each marker.
-        markerId: MarkerId(_allShip.allShipByUserId[1].imei),
-        position: LatLng(_allShip.allShipByUserId[1].latitude,_allShip.allShipByUserId[1].longitude),
-        onTap: () {
-          setState(() {
-            currentlySelectedPin = _sourcePinInfo;
-            pinPillPosition = 0;
-          });
-        },
-        icon: sourceIcon));
-
-    if(_allShip.allShipByUserId[1].isActive == true){
-      _status = "Hoạt động";
-    }else{
-      _status = "Mất tín hiệu";
-    }
-
-    _sourcePinInfo = PinInformation(
-      vehicalNumber: _allShip.allShipByUserId[1].tentau,
-      location: LatLng(_allShip.allShipByUserId[1].latitude,_allShip.allShipByUserId[1].longitude),
-      pinPath: "assets/icons/driving_pin.png",
-      avatarPath: "assets/images/friend1.jpg",
-      labelColor: Colors.blueAccent,
-      address: 'Bình Châu, Xuyên Mộc, Bà Rịa - Vũng Tàu, Việt Nam',
-      status: _status,
-      timeSave: _allShip.allShipByUserId[1].dateSave,
-    );
-
-    // destination pin
-    _markers.add(Marker(
-        // This marker id can be anything that uniquely identifies each marker.
-        markerId: MarkerId('destPin'),
-        position: DEST_LOCATION,
-        onTap: () {
-          setState(() {
-            currentlySelectedPin = destinationPinInfo;
-            pinPillPosition = 0;
-          });
-        },
-        icon: destinationIcon));
-    
-    destinationPinInfo = PinInformation(
-      vehicalNumber: "59F1-01121",
-      location: DEST_LOCATION,
-      pinPath: "assets/icons/destination_map_marker.png",
-      avatarPath: "assets/images/friend2.jpg",
-      labelColor: Colors.purple,
-      address: 'QL 1, Tân Hòa, Tp. Biên Hòa, Đồng Nai',
-      status: 'Mất kết nối',
-      timeSave: '18:49:50 03-11-2021',
-    );
-  }
-
-  void setSourceAndDestinationIcons() async {
-    sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/icons/driving_pin.png');
-
-    destinationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/icons/destination_map_marker.png');
-  }
-
-  void onMapCreated(GoogleMapController controller){
-    //controller.setMapStyle(Utils.mapStyles);
-    _controller.complete(controller);
-    
-    setMapPins();
-    setPolylines();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,11 +58,11 @@ class _MapGoogleState extends State<MapGoogle> {
         myLocationEnabled: true,
         compassEnabled: true,
         tiltGesturesEnabled: false,
+        onMapCreated: onMapCreated,
         markers: _markers,
         polylines: _polylines,
         mapType: MapType.normal,
         initialCameraPosition: initialLocation,
-        onMapCreated: onMapCreated,
         onTap: (LatLng location) {
           setState(() {
             pinPillPosition = -120;
@@ -205,6 +94,75 @@ class _MapGoogleState extends State<MapGoogle> {
         _polylines.add(polyline);
       });
     }
+  }
+
+   void onMapCreated(controller){
+    //controller.setMapStyle(Utils.mapStyles);
+    _controller.complete(controller);
+    setMapPins();
+    setPolylines();
+
+  }
+  void setMapPins() async{
+    await _allShip.getAllShipByUserId();
+      for (int i = 0; i < _allShip.arrayAPI.length; i++) {
+        print(_allShip.arrayAPI.length);
+        String _pinPath, _avatarPath, _address, _status;
+        Color _labelColor;
+        Marker resultMarker = Marker (
+            markerId: MarkerId(_allShip.arrayAPI[i].imei),
+            position: LatLng(_allShip.arrayAPI[i].latitude,
+                _allShip.arrayAPI[i].longitude),
+            onTap: () {
+              setState(() {
+                if (_allShip.arrayAPI[i].statusID == 3) {
+                  _pinPath = "assets/icons/driving_boat_greens.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.greenAccent;
+                  _status = 'Đang hoạt động';
+                } else if (_allShip.arrayAPI[i].statusID == 2) {
+                  _pinPath = "assets/icons/driving_boat_red.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.redAccent;
+                  _status = 'Mất tính hiệu';
+                } else if (_allShip.arrayAPI[i].speed == 0) {
+                  _pinPath = "assets/icons/driving_boat_black.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.black;
+                  _status = 'Dừng';
+                } else if (_allShip.arrayAPI[i].latitude == 0 &&
+                    _allShip.arrayAPI[i].longitude == 0) {
+                  _pinPath = "assets/icons/driving_boat_red.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.red;
+                  _status = 'Mất tính hiệu GPS';
+                } else {
+                  _pinPath = "assets/icons/destination_map_marker.png";
+                  _avatarPath = "assets/images/friend2.jpg";
+                  _labelColor = Colors.purple;
+                  _status = 'Chưa kích hoạt';
+                }
+                currentlySelectedPin = PinInformation(
+                  vehicalNumber: _allShip.arrayAPI[i].tentau,
+                  location: LatLng(_allShip.arrayAPI[i].latitude,
+                      _allShip.arrayAPI[i].longitude),
+                  pinPath: _pinPath,
+                  avatarPath: _avatarPath,
+                  labelColor: _labelColor,
+                  address:
+                      'Phường 12, Thành phố Vũng Tầu, Bà Rịa - Vũng Tàu, Việt Nam',
+                  status: _status,
+                  timeSave: _allShip.arrayAPI[i].dateSave,
+                );
+                pinPillPosition = 0;
+              });
+            },
+            icon: await BitmapDescriptor.fromAssetImage(
+                ImageConfiguration(devicePixelRatio: 2.5),
+                'assets/icons/driving_boat_blue.png'));
+        // Add it to Set
+        _markers.add(resultMarker);      
+      }
   }
 }
 
