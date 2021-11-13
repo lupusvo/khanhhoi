@@ -6,8 +6,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 class AllShip{
+  List<AllShipByUserId> arrayAPI = [];
   List<AllShipByUserId> allShipByUserId = [];
   List<AllShipByUserId> runingShipByUserId = [];
+  List<AllShipByUserId> pauseShipByUserId = [];
+  List<AllShipByUserId> disShipByUserId = [];
+  List<AllShipByUserId> gpsShipByUserId = [];
+
   Future<void> getAllShipByUserId() async {
     final prefs = await SharedPreferences.getInstance();
     var ApiKey = prefs.getString('token');
@@ -25,9 +30,17 @@ class AllShip{
     List<dynamic> body = convert.jsonDecode(response.body);
     allShipByUserId = body.map((dynamic item) => AllShipByUserId.fromJson(item)).toList();
     for(int i = 0 ; i < allShipByUserId.length;i++){
-      String receivedJson = "... Your JSON string ....";
       if(allShipByUserId[i].statusID == 3){
         runingShipByUserId.add(allShipByUserId[i]);
+      }
+      if(allShipByUserId[i].statusID > 3){
+        pauseShipByUserId.add(allShipByUserId[i]);
+      }
+      if(allShipByUserId[i].statusID == 2){
+        disShipByUserId.add(allShipByUserId[i]);
+      }
+      if(allShipByUserId[i].latitude == 0 && allShipByUserId[i].longitude == 0){
+        gpsShipByUserId.add(allShipByUserId[i]);
       }
     }
   }

@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:sea_demo01/src/repositories/all_ship.dart';
+import 'package:sea_demo01/src/repositories/pin_pill_info.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
-
+import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
 import 'device_list_page.dart';
 import 'map_google.dart';
 
@@ -15,22 +19,38 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  final controller = FloatingSearchBarController();
+  final fsbController = FloatingSearchBarController();
   int _index = 0;
   Widget appBarTitle = Text('Giám sát');
   Icon actionIcon = Icon(Icons.search);
   Choice _selectedChoice = choices[0];
   // marker
   final _allShip = new AllShip();
-  MapGoogle mapGoogle = new MapGoogle();
-  @override
-  void initState() {
-    super.initState();
-    _allShip.getAllShipByUserId();
-  }
+  Completer<GoogleMapController> _controller = Completer();
+  Set<Marker> _markers = Set();
+  Set<Polyline> _polylines = {};
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints = PolylinePoints();
+  String googleAPIKey = 'AIzaSyDO5GoIsghz2hD3oi3CuhDxNgKuN3Gz7KE';
+  double pinPillPosition = -120;
+  PinInformation currentlySelectedPin = PinInformation(
+    pinPath: 'assets/icons/driving_pin.png',
+    avatarPath: 'assets/images/friend1.jpg',
+    location: LatLng(0, 0),
+    vehicalNumber: 'Start Location',
+    labelColor: Colors.grey,
+    address: '',
+    status: '',
+    timeSave: '',
+  );
 
   @override
   Widget build(BuildContext context){
+    CameraPosition initialLocation = CameraPosition(
+        zoom: CAMERA_ZOOM,
+        bearing: CAMERA_BEARING,
+        tilt: CAMERA_TILT,
+        target: LatLng(16.20088017579864, 105.80583502701335));
     return Scaffold (
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -63,7 +83,9 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      mapGoogle.createState().setMapPins();
+                      MapPinPillComponentState().dispose();
+                      _allShip.arrayAPI = _allShip.allShipByUserId;
+                      setMapPins();
                     });
                   },
                   child: Row(
@@ -80,14 +102,14 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      mapGoogle.createState().setMapPins();
+                      _allShip.arrayAPI = _allShip.runingShipByUserId;
+                      setMapPins();
                     });
                   },
                   child: Row(
                     children: [
                       const Icon(Icons.directions_boat, color: Colors.green,),
-                      //_allShip.allShipByUserId.where((AllShipByUserId) => AllShipByUserId.statusID == 3).length.toString()
-                      Text("   Đang chạy ("+_allShip.runingShipByUserId.length.toString()+")",style: const TextStyle(color: Colors.green,fontSize: 16),)
+                      Text("   Đang chạy ("+_allShip.allShipByUserId.where((AllShipByUserId) => AllShipByUserId.statusID == 3).length.toString()+")",style: const TextStyle(color: Colors.green,fontSize: 16),)
                     ],
                   )),
               ),
@@ -97,7 +119,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      mapGoogle.createState().setMapPins();
+                      _allShip.arrayAPI = _allShip.pauseShipByUserId;
+                      setMapPins();
                     });
                   },
                   child: Row(
@@ -113,7 +136,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      mapGoogle.createState().setMapPins();
+                      _allShip.arrayAPI = _allShip.disShipByUserId;
+                      setMapPins();
                     });
                   },
                   child: Row(
@@ -129,7 +153,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      mapGoogle.createState().setMapPins();
+                      _allShip.arrayAPI=_allShip.gpsShipByUserId;
+                      setMapPins();
                     });
                   },
                   child: Row(
@@ -149,9 +174,136 @@ class _MapPageState extends State<MapPage> {
           width: 200,
         ),
       ),
-      body: MapGoogle(),
+      body: Stack(children: <Widget>[
+      GoogleMap(
+        myLocationEnabled: true,
+        compassEnabled: true,
+        tiltGesturesEnabled: false,
+        onMapCreated: onMapCreated,
+        markers: _markers,
+        polylines: _polylines,
+        mapType: MapType.normal,
+        initialCameraPosition: initialLocation,
+        onTap: (LatLng location) {
+          setState(() {
+            pinPillPosition = -120;
+          });
+        },
+      ),
+      MapPinPillComponent(
+          pinPillPosition: pinPillPosition,
+          currentlySelectedPin: currentlySelectedPin)
+    ]),
     );
   }
+  
+
+  setPolylines() async {
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        googleAPIKey,
+        PointLatLng(SOURCE_LOCATION.latitude, SOURCE_LOCATION.longitude),
+        PointLatLng(DEST_LOCATION.latitude, DEST_LOCATION.longitude));
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+
+      setState(() {
+        Polyline polyline = Polyline(
+            polylineId: PolylineId("poly"),
+            color: Color.fromARGB(255, 40, 122, 198),
+            points: polylineCoordinates);
+        _polylines.add(polyline);
+      });
+    }
+  }
+
+   void onMapCreated(controller) {
+    //controller.setMapStyle(Utils.mapStyles);
+    _controller.complete(controller);
+    getMarker();
+  }
+  void getMarker() async{
+    await _allShip.getAllShipByUserId();
+    _allShip.arrayAPI = _allShip.allShipByUserId;
+    setState(() {
+      setMapPins();
+    });
+  }
+  void setMapPins() async{
+      _markers.clear();
+      String _pinPath, _avatarPath, _address, _status;
+      String _urlMarker = '';
+      late Color _labelColor;
+      for (int i = 0; i < _allShip.arrayAPI.length; i++){
+        if (_allShip.arrayAPI[i].statusID == 3) {
+          _urlMarker = 'assets/icons/driving_boat_greens.png';
+        } else if (_allShip.arrayAPI[i].statusID == 2) {
+          _urlMarker = 'assets/icons/driving_boat_red.png';
+        } else if (_allShip.arrayAPI[i].statusID > 3) {
+          _urlMarker = 'assets/icons/driving_boat_black.png';
+        } else if (_allShip.arrayAPI[i].latitude == 0 && _allShip.arrayAPI[i].longitude == 0) {
+          _urlMarker = "assets/icons/destination_map_marker.png";
+        } else {
+          _urlMarker = "assets/icons/destination_map_red.png";
+        }
+        Marker resultMarker = Marker (
+            markerId: MarkerId(_allShip.arrayAPI[i].imei),
+            position: LatLng(_allShip.arrayAPI[i].latitude,
+                _allShip.arrayAPI[i].longitude),
+            onTap: () {
+              setState(() {
+                if (_allShip.arrayAPI[i].statusID == 3) {
+                  _pinPath = "assets/icons/driving_boat_greens.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.greenAccent;
+                  _status = 'Đang hoạt động';
+                } else if (_allShip.arrayAPI[i].statusID == 2) {
+                  _pinPath = "assets/icons/driving_boat_red.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.redAccent;
+                  _status = 'Mất tính hiệu';
+                } else if (_allShip.arrayAPI[i].statusID > 3) {
+                  _pinPath = "assets/icons/driving_boat_black.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.black;
+                  _status = 'Dừng';
+                } else if (_allShip.arrayAPI[i].latitude == 0 &&
+                    _allShip.arrayAPI[i].longitude == 0) {
+                  _pinPath = "assets/icons/destination_map_marker.png";
+                  _avatarPath = "assets/images/friend1.jpg";
+                  _labelColor = Colors.red;
+                  _status = 'Mất tính hiệu GPS';
+                } else {
+                  _pinPath = "assets/icons/destination_map_red.png";
+                  _avatarPath = "assets/images/friend2.jpg";
+                  _labelColor = Colors.purple;
+                  _status = 'Chưa kích hoạt';
+                }
+                currentlySelectedPin = PinInformation(
+                  vehicalNumber: _allShip.arrayAPI[i].tentau,
+                  location: LatLng(_allShip.arrayAPI[i].latitude,
+                      _allShip.arrayAPI[i].longitude),
+                  pinPath: _pinPath,
+                  avatarPath: _avatarPath,
+                  labelColor: _labelColor,
+                  address: "",
+                  status: _status,
+                  timeSave: _allShip.arrayAPI[i].dateSave,
+                );
+                pinPillPosition = 0;
+              });
+            },
+            icon: await BitmapDescriptor.fromAssetImage(
+                  ImageConfiguration(devicePixelRatio: 2.5),
+                  _urlMarker)
+          );
+        // Add it to Set
+        _markers.add(resultMarker);      
+      }
+    }
+
   
   Widget buildSearchBar() {
     final actions = [
@@ -173,7 +325,7 @@ class _MapPageState extends State<MapPage> {
     return Consumer<SearchModel>(
       builder: (context, model, _) => FloatingSearchBar(
         automaticallyImplyBackButton: false,
-        controller: controller,
+        controller: fsbController,
         clearQueryOnClose: true,
         hint: 'חיפוש...',
         iconColor: Colors.grey,
@@ -242,7 +394,7 @@ class _MapPageState extends State<MapPage> {
 
   @override
   void dispose() {
-    controller.dispose();
+    fsbController.dispose();
     super.dispose();
   }
 }

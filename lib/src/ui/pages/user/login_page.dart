@@ -16,7 +16,8 @@ import 'package:http/http.dart' as http;
 import 'index.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  
+  const LoginPage({Key? key,}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -31,8 +32,18 @@ class _LoginPageState extends State<LoginPage> {
   Key _formKey = GlobalKey<FormState>();
   InfoUserByUserName _infoUserByUserName = new InfoUserByUserName();
 
+  void checkReloadLogin() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _username = prefs.getString('user').toString();
+    String _password = prefs.getString('pass').toString();
+    if(_username != null && _password !=null && _username != "" && _password != ""){
+      _userController.text = _username;
+      _passController.text = _password;
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    checkReloadLogin();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -203,9 +214,10 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             _isLoading = false;
           });
-          final prefs = await SharedPreferences.getInstance();
+          SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('token', jsonResponse.toString());
           prefs.setString('user', UserName.toString());
+          prefs.setString('pass', PassWord.toString());
           await _infoUserByUserName.getInfoUserByUserName();
           SmartDialog.showLoading(
             backDismiss: false,

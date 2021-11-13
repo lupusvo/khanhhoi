@@ -105,32 +105,33 @@ class _MapGoogleState extends State<MapGoogle> {
   }
   void setMapPins() async{
     await _allShip.getAllShipByUserId();
-      for (int i = 0; i < _allShip.runingShipByUserId.length; i++) {
+      for (int i = 0; i < _allShip.arrayAPI.length; i++) {
+        print(_allShip.arrayAPI.length);
         String _pinPath, _avatarPath, _address, _status;
         Color _labelColor;
         Marker resultMarker = Marker (
-            markerId: MarkerId(_allShip.runingShipByUserId[i].imei),
-            position: LatLng(_allShip.runingShipByUserId[i].latitude,
-                _allShip.runingShipByUserId[i].longitude),
+            markerId: MarkerId(_allShip.arrayAPI[i].imei),
+            position: LatLng(_allShip.arrayAPI[i].latitude,
+                _allShip.arrayAPI[i].longitude),
             onTap: () {
               setState(() {
-                if (_allShip.runingShipByUserId[i].statusID == 3) {
+                if (_allShip.arrayAPI[i].statusID == 3) {
                   _pinPath = "assets/icons/driving_boat_greens.png";
                   _avatarPath = "assets/images/friend1.jpg";
                   _labelColor = Colors.greenAccent;
                   _status = 'Đang hoạt động';
-                } else if (_allShip.runingShipByUserId[i].statusID == 2) {
+                } else if (_allShip.arrayAPI[i].statusID == 2) {
                   _pinPath = "assets/icons/driving_boat_red.png";
                   _avatarPath = "assets/images/friend1.jpg";
                   _labelColor = Colors.redAccent;
                   _status = 'Mất tính hiệu';
-                } else if (_allShip.runingShipByUserId[i].speed == 0) {
+                } else if (_allShip.arrayAPI[i].speed == 0) {
                   _pinPath = "assets/icons/driving_boat_black.png";
                   _avatarPath = "assets/images/friend1.jpg";
                   _labelColor = Colors.black;
                   _status = 'Dừng';
-                } else if (_allShip.runingShipByUserId[i].latitude == 0 &&
-                    _allShip.runingShipByUserId[i].longitude == 0) {
+                } else if (_allShip.arrayAPI[i].latitude == 0 &&
+                    _allShip.arrayAPI[i].longitude == 0) {
                   _pinPath = "assets/icons/driving_boat_red.png";
                   _avatarPath = "assets/images/friend1.jpg";
                   _labelColor = Colors.red;
@@ -142,16 +143,16 @@ class _MapGoogleState extends State<MapGoogle> {
                   _status = 'Chưa kích hoạt';
                 }
                 currentlySelectedPin = PinInformation(
-                  vehicalNumber: _allShip.runingShipByUserId[i].tentau,
-                  location: LatLng(_allShip.runingShipByUserId[i].latitude,
-                      _allShip.runingShipByUserId[i].longitude),
+                  vehicalNumber: _allShip.arrayAPI[i].tentau,
+                  location: LatLng(_allShip.arrayAPI[i].latitude,
+                      _allShip.arrayAPI[i].longitude),
                   pinPath: _pinPath,
                   avatarPath: _avatarPath,
                   labelColor: _labelColor,
                   address:
                       'Phường 12, Thành phố Vũng Tầu, Bà Rịa - Vũng Tàu, Việt Nam',
                   status: _status,
-                  timeSave: _allShip.runingShipByUserId[i].dateSave,
+                  timeSave: _allShip.arrayAPI[i].dateSave,
                 );
                 pinPillPosition = 0;
               });
@@ -160,7 +161,7 @@ class _MapGoogleState extends State<MapGoogle> {
                 ImageConfiguration(devicePixelRatio: 2.5),
                 'assets/icons/driving_boat_blue.png'));
         // Add it to Set
-        _markers.add(resultMarker);
+        _markers.add(resultMarker);      
       }
   }
 }
