@@ -245,7 +245,7 @@ class _MapPageState extends State<MapPage> {
 
   }
   void setMapPins() async{
-      _markers.clear();
+      //_markers.clear();
       for (int i = 0; i < _allShip.arrayAPI.length; i++){
         String _pinPath, _avatarPath, _address, _status;
         Color _labelColor;
