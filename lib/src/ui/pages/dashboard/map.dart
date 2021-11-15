@@ -50,7 +50,7 @@ class _MapPageState extends State<MapPage> {
       zoom: 5.5,
       bearing: 0,
       tilt: 0,
-      target: LatLng(16.20088017579864, 105.80583502701335));
+      target: LatLng(10.7553411,106.4150405));
   TextEditingController _searchControler = new TextEditingController();
 
   @override
@@ -255,7 +255,7 @@ class _MapPageState extends State<MapPage> {
                       color: Colors.white,
                       onPressed: () {
                         clearData();
-                        exit(0);
+                        //exit(0);
                       },
                       child: Row(
                         children: [
@@ -327,10 +327,10 @@ class _MapPageState extends State<MapPage> {
     }*/
   }
   void clearData() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    exit(0);
   }
-  
   void onMapCreated(controller) {
     //controller.setMapStyle(Utils.mapStyles);
     _controller.complete(controller);

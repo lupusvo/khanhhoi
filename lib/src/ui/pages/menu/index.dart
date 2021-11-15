@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sea_demo01/src/repositories/categories_list.dart'
-    as categoriesList;
+import 'package:sea_demo01/src/repositories/categories_list.dart' as categoriesList;
 import 'package:sea_demo01/src/ui/pages/user/login_page.dart';
 
 class MenuPage extends StatefulWidget {
@@ -16,7 +15,7 @@ class _MenuPageState extends State<MenuPage> {
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(
-          title: Center(
+          title: const Center(
             child: Text(
               "Menu Page",
               style:
@@ -98,10 +97,12 @@ class _MenuPageState extends State<MenuPage> {
                           ],
                         ),
                         onTap: () async {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()));
+                          Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()),
+                                        );
                         },
                       ),
                     ),
