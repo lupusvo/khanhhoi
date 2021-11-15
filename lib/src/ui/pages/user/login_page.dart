@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -36,12 +35,13 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _username = prefs.getString('user').toString();
     String _password = prefs.getString('pass').toString();
-    if(_username != null && _password !=null && _username != "" && _password != ""){
+    if(_username  == null && _password == null){
+      _userController.text = "";
+      _passController.text = "";
+    }
+    if(_username != null && _password != null && _username != "" && _password != ""){
       _userController.text = _username;
       _passController.text = _password;
-    }else{
-      _username = "";
-      _password = "";
     }
   }
   @override
@@ -198,8 +198,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> onSignInClicked(
-      String UserName, String PassWord, int Type) async {
+  Future<void> onSignInClicked(String UserName, String PassWord, int Type) async {
+
     if (bloc.isValidInfo(_userController.text, _passController.text)) {
       var url = Uri.parse('https://i-sea.khanhhoi.net/home/login');
       SharedPreferences sharedPreferences =

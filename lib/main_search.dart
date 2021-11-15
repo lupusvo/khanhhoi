@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:sea_demo01/src/repositories/place.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
-import 'package:sea_demo01/src/ui/pages/dashboard/map_google.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -273,7 +272,6 @@ class Map extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        buildMap(),
         buildFabs(),
       ],
     );
@@ -304,9 +302,6 @@ class Map extends StatelessWidget {
     );
   }
 
-  Widget buildMap() {
-    return const MapGoogle();
-  }
 }
 
 class SomeScrollableContent extends StatelessWidget {

@@ -309,7 +309,7 @@ packages:
     source: hosted
     version: "2.1.0"
   google_maps_flutter:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"

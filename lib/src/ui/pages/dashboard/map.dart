@@ -261,17 +261,19 @@ class _MapPageState extends State<MapPage> {
         shipByUserId.add(_allShip.arrayAPI[i]);
       }
     }
-    _allShip.arrayAPI = shipByUserId;
-    SmartDialog.showLoading(
-            backDismiss: false,
-            msg: 'Đang tải',
-          );
-    await Future.delayed(const Duration(seconds: 1));
-    SmartDialog.dismiss();
-    setState(() {
-      pinPillPosition = -120;
-      setMapPins();
-    });
+    if(shipByUserId.length > 0){
+       _allShip.arrayAPI = shipByUserId;
+      SmartDialog.showLoading(
+              backDismiss: false,
+              msg: "đang tải",
+            );
+      await Future.delayed(const Duration(seconds: 1));
+      SmartDialog.dismiss();
+      setState(() {
+        pinPillPosition = -120;
+        setMapPins();
+      });
+    } 
   }
   void setMapPins() async{
       _markers.clear();
@@ -280,35 +282,15 @@ class _MapPageState extends State<MapPage> {
       late Color _labelColor;
       for (int i = 0; i < _allShip.arrayAPI.length; i++){
         if (_allShip.arrayAPI[i].statusID == 3) {
-          _pinPath = "assets/icons/driving_boat_greens.png";
-          _avatarPath = "assets/images/friend1.jpg";
-          _labelColor = Colors.greenAccent;
-          _status = 'Đang hoạt động';
           _urlMarker = 'assets/icons/driving_boat_greens.png';
         } else if (_allShip.arrayAPI[i].statusID == 2) {
-          _pinPath = "assets/icons/driving_boat_red.png";
-          _avatarPath = "assets/images/friend1.jpg";
-          _labelColor = Colors.redAccent;
-          _status = 'Mất tính hiệu';
           _urlMarker = 'assets/icons/driving_boat_red.png';
         } else if (_allShip.arrayAPI[i].statusID > 3) {
-          _pinPath = "assets/icons/driving_boat_black.png";
-          _avatarPath = "assets/images/friend1.jpg";
-          _labelColor = Colors.black;
-          _status = 'Dừng';
           _urlMarker = 'assets/icons/driving_boat_black.png';
         } else if (_allShip.arrayAPI[i].latitude == 0 &&
             _allShip.arrayAPI[i].longitude == 0) {
-          _pinPath = "assets/icons/destination_map_marker.png";
-          _avatarPath = "assets/images/friend1.jpg";
-          _labelColor = Colors.red;
-          _status = 'Mất tính hiệu GPS';
           _urlMarker = "assets/icons/destination_map_marker.png";
         } else {
-          _pinPath = "assets/icons/destination_map_red.png";
-          _avatarPath = "assets/images/friend2.jpg";
-          _labelColor = Colors.purple;
-          _status = 'Chưa kích hoạt';
           _urlMarker = "assets/icons/destination_map_red.png";
         }
         Marker resultMarker = Marker (
@@ -432,7 +414,6 @@ class _MapPageState extends State<MapPage> {
       itemCount: 200,
       itemBuilder: (context, index) {
         print('build $index');
-
         return Container(
           color: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
