@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -10,6 +11,7 @@ import 'package:sea_demo01/src/repositories/all_ship.dart';
 import 'package:sea_demo01/src/repositories/pin_pill_info.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
 import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'device_list_page.dart';
 
 class MapPage extends StatefulWidget {
@@ -48,177 +50,261 @@ class _MapPageState extends State<MapPage> {
       zoom: 5.5,
       bearing: 0,
       tilt: 0,
-      target: LatLng(16.20088017579864, 105.80583502701335)
-    );
+      target: LatLng(16.20088017579864, 105.80583502701335));
   TextEditingController _searchControler = new TextEditingController();
 
   @override
-  Widget build(BuildContext context){
-    
-    return Scaffold (
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(20)),
-          child: TextFormField(
-            style: const TextStyle(fontSize: 20, color: Colors.black),
-            controller: _searchControler,
-            decoration: const InputDecoration(
-              hintText: 'Nhập biển số xe',
-              hintStyle: TextStyle(color: Colors.grey),
-              contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.cyan),
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            child: TextFormField(
+              style: const TextStyle(fontSize: 20, color: Colors.black),
+              controller: _searchControler,
+              decoration: const InputDecoration(
+                hintText: 'Nhập biển số xe',
+                hintStyle: TextStyle(color: Colors.grey),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.cyan),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.cyan),
+                ),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.cyan),
-              ),
-              
             ),
           ),
+          actions: [
+            Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    searchMapPins();
+                  },
+                  child: Icon(
+                    Icons.search,
+                    size: 26.0,
+                  ),
+                )),
+            PopupMenuButton(
+              icon: Icon(Icons.more_vert),
+              itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                PopupMenuItem(
+                  child: FlatButton(
+                      height: 50.0,
+                      color: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          pinPillPosition = -120;
+                          _allShip.arrayAPI = _allShip.allShipByUserId;
+                          setMapPins();
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.directions_boat,
+                            color: Colors.blue,
+                          ),
+                          Text(
+                            "   Tất cả xe (" +
+                                _allShip.allShipByUserId.length.toString() +
+                                ")",
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  child: FlatButton(
+                      height: 50.0,
+                      color: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          pinPillPosition = -120;
+                          _allShip.arrayAPI = _allShip.runingShipByUserId;
+                          setMapPins();
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.directions_boat,
+                            color: Colors.green,
+                          ),
+                          Text(
+                            "   Đang chạy (" +
+                                _allShip.allShipByUserId
+                                    .where((AllShipByUserId) =>
+                                        AllShipByUserId.statusID == 3)
+                                    .length
+                                    .toString() +
+                                ")",
+                            style: const TextStyle(
+                                color: Colors.green, fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+                PopupMenuItem(
+                  child: FlatButton(
+                      height: 50.0,
+                      color: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          pinPillPosition = -120;
+                          _allShip.arrayAPI = _allShip.pauseShipByUserId;
+                          setMapPins();
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.directions_boat,
+                            color: Colors.black,
+                          ),
+                          Text(
+                            "   Dừng (" +
+                                _allShip.allShipByUserId
+                                    .where((AllShipByUserId) =>
+                                        AllShipByUserId.statusID > 3)
+                                    .length
+                                    .toString() +
+                                ")",
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+                PopupMenuItem(
+                  child: FlatButton(
+                      height: 50.0,
+                      color: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          pinPillPosition = -120;
+                          _allShip.arrayAPI = _allShip.disShipByUserId;
+                          setMapPins();
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.directions_boat,
+                            color: Colors.red,
+                          ),
+                          Text(
+                            "   Mất kết nối (" +
+                                _allShip.allShipByUserId
+                                    .where((AllShipByUserId) =>
+                                        AllShipByUserId.statusID == 2)
+                                    .length
+                                    .toString() +
+                                ")",
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+                PopupMenuItem(
+                  child: FlatButton(
+                      height: 50.0,
+                      color: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          pinPillPosition = -120;
+                          _allShip.arrayAPI = _allShip.gpsShipByUserId;
+                          setMapPins();
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.directions_boat,
+                            color: Colors.yellow,
+                          ),
+                          Text(
+                            "   Mất GPS (" +
+                                _allShip.allShipByUserId
+                                    .where((AllShipByUserId) =>
+                                        AllShipByUserId.latitude == 0 &&
+                                        AllShipByUserId.longitude == 0)
+                                    .length
+                                    .toString() +
+                                ")",
+                            style: const TextStyle(
+                                color: Colors.yellow, fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  child: FlatButton(
+                      height: 50.0,
+                      color: Colors.white,
+                      onPressed: () {
+                        clearData();
+                        exit(0);
+                      },
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.exit_to_app,
+                            color: Colors.blueGrey,
+                          ),
+                          Text(
+                            "Thoát",
+                            style: const TextStyle(
+                                color: Colors.blueGrey, fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+              ],
+            ),
+          ],
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: GestureDetector(
-              onTap: () {
-                searchMapPins();
-              },
-              child: Icon(
-                Icons.search,
-                size: 26.0,
-              ),
-            )
+        resizeToAvoidBottomInset: false,
+        drawer: Drawer(
+          child: Container(
+            width: 200,
           ),
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-               PopupMenuItem(
-                child: FlatButton(
-                  height: 50.0,
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      pinPillPosition = -120;
-                      _allShip.arrayAPI = _allShip.allShipByUserId;
-                      setMapPins();
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(Icons.directions_boat, color: Colors.blue,),
-                      Text("   Tất cả xe ("+_allShip.allShipByUserId.length.toString()+")",style: const TextStyle(color: Colors.blue,fontSize: 16),)
-                    ],
-                  )),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem(
-                child: FlatButton(
-                  height: 50.0,
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      pinPillPosition = -120;
-                      _allShip.arrayAPI = _allShip.runingShipByUserId;
-                      setMapPins();
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(Icons.directions_boat, color: Colors.green,),
-                      Text("   Đang chạy ("+_allShip.allShipByUserId.where((AllShipByUserId) => AllShipByUserId.statusID == 3).length.toString()+")",style: const TextStyle(color: Colors.green,fontSize: 16),)
-                    ],
-                  )),
-              ),
-              PopupMenuItem(
-                child: FlatButton(
-                  height: 50.0,
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      pinPillPosition = -120;
-                      _allShip.arrayAPI = _allShip.pauseShipByUserId;
-                      setMapPins();
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(Icons.directions_boat, color: Colors.black,),
-                      Text("   Dừng ("+_allShip.allShipByUserId.where((AllShipByUserId) => AllShipByUserId.statusID > 3).length.toString()+")",style: const TextStyle(color: Colors.black,fontSize: 16),)
-                    ],
-                  )),
-              ),
-              PopupMenuItem(
-                child: FlatButton(
-                  height: 50.0,
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      pinPillPosition = -120;
-                      _allShip.arrayAPI = _allShip.disShipByUserId;
-                      setMapPins();
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(Icons.directions_boat, color: Colors.red,),
-                      Text("   Mất kết nối ("+_allShip.allShipByUserId.where((AllShipByUserId) => AllShipByUserId.statusID == 2).length.toString()+")",style: const TextStyle(color: Colors.red,fontSize: 16),)
-                    ],
-                  )),
-              ),
-              PopupMenuItem(
-                child: FlatButton(
-                  height: 50.0,
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      pinPillPosition = -120;
-                      _allShip.arrayAPI=_allShip.gpsShipByUserId;
-                      setMapPins();
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(Icons.directions_boat, color: Colors.yellow,),
-                      Text("   Mất GPS ("+_allShip.allShipByUserId.where((AllShipByUserId) => AllShipByUserId.latitude == 0 && AllShipByUserId.longitude == 0).length.toString()+")",style: const TextStyle(color: Colors.yellow,fontSize: 16),)
-                    ],
-                  )),
-              ),
-            ],
-          ),
-        ],
-      ),
-      resizeToAvoidBottomInset: false,
-      drawer: Drawer(
-        child: Container(
-          width: 200,
         ),
+        body: Stack(children: <Widget>[
+          GoogleMap(
+            myLocationEnabled: true,
+            compassEnabled: true,
+            tiltGesturesEnabled: false,
+            onMapCreated: onMapCreated,
+            markers: _markers,
+            polylines: _polylines,
+            mapType: MapType.normal,
+            initialCameraPosition: initialLocation,
+            onTap: (LatLng location) {
+              setState(() {
+                pinPillPosition = -120;
+              });
+            },
+          ),
+          MapPinPillComponent(
+              pinPillPosition: pinPillPosition,
+              currentlySelectedPin: currentlySelectedPin),
+        ]),
       ),
-      body: Stack(children: <Widget>[
-      GoogleMap(
-        myLocationEnabled: true,
-        compassEnabled: true,
-        tiltGesturesEnabled: false,
-        onMapCreated: onMapCreated,
-        markers: _markers,
-        polylines: _polylines,
-        mapType: MapType.normal,
-        initialCameraPosition: initialLocation,
-        onTap: (LatLng location) {
-          setState(() {
-            pinPillPosition = -120;
-          });
-        },
-      ),
-      MapPinPillComponent(
-      pinPillPosition: pinPillPosition,
-      currentlySelectedPin: currentlySelectedPin),
-    ]),
+      onWillPop: () async => false,
     );
   }
-  
 
   setPolylines() async {
     /*PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -240,65 +326,72 @@ class _MapPageState extends State<MapPage> {
       });
     }*/
   }
-
-   void onMapCreated(controller) {
+  void clearData() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+  
+  void onMapCreated(controller) {
     //controller.setMapStyle(Utils.mapStyles);
     _controller.complete(controller);
     getMarker();
   }
-  void getMarker() async{
+
+  void getMarker() async {
     await _allShip.getAllShipByUserId();
     _allShip.arrayAPI = _allShip.allShipByUserId;
     setState(() {
       setMapPins();
     });
   }
-  void searchMapPins() async{
+
+  void searchMapPins() async {
     _allShip.arrayAPI = _allShip.allShipByUserId;
     List<AllShipByUserId> shipByUserId = [];
-    for (int i = 0; i < _allShip.arrayAPI.length; i++){
-      if(_allShip.arrayAPI[i].tentau == _searchControler.text){
+    for (int i = 0; i < _allShip.arrayAPI.length; i++) {
+      if (_allShip.arrayAPI[i].tentau == _searchControler.text) {
         shipByUserId.add(_allShip.arrayAPI[i]);
       }
     }
-    if(shipByUserId.length > 0){
-       _allShip.arrayAPI = shipByUserId;
+    if (shipByUserId.length > 0) {
+      _allShip.arrayAPI = shipByUserId;
       SmartDialog.showLoading(
-              backDismiss: false,
-              msg: "đang tải",
-            );
+        backDismiss: false,
+        msg: "đang tải",
+      );
       await Future.delayed(const Duration(seconds: 1));
       SmartDialog.dismiss();
       setState(() {
         pinPillPosition = -120;
         setMapPins();
       });
-    } 
+    }
   }
-  void setMapPins() async{
-      _markers.clear();
-      String _pinPath, _avatarPath, _address, _status;
-      String _urlMarker = '';
-      late Color _labelColor;
-      for (int i = 0; i < _allShip.arrayAPI.length; i++){
-        if (_allShip.arrayAPI[i].statusID == 3) {
-          _urlMarker = 'assets/icons/driving_boat_greens.png';
-        } else if (_allShip.arrayAPI[i].statusID == 2) {
-          _urlMarker = 'assets/icons/driving_boat_red.png';
-        } else if (_allShip.arrayAPI[i].statusID > 3) {
-          _urlMarker = 'assets/icons/driving_boat_black.png';
-        } else if (_allShip.arrayAPI[i].latitude == 0 &&
-            _allShip.arrayAPI[i].longitude == 0) {
-          _urlMarker = "assets/icons/destination_map_marker.png";
-        } else {
-          _urlMarker = "assets/icons/destination_map_red.png";
-        }
-        Marker resultMarker = Marker (
-            markerId: MarkerId(_allShip.arrayAPI[i].imei),
-            position: LatLng(_allShip.arrayAPI[i].latitude,
-                _allShip.arrayAPI[i].longitude),
-            onTap: () {
-              setState(() {
+
+  void setMapPins() async {
+    _markers.clear();
+    String _pinPath, _avatarPath, _address, _status;
+    String _urlMarker = '';
+    late Color _labelColor;
+    for (int i = 0; i < _allShip.arrayAPI.length; i++) {
+      if (_allShip.arrayAPI[i].statusID == 3) {
+        _urlMarker = 'assets/icons/driving_boat_greens.png';
+      } else if (_allShip.arrayAPI[i].statusID == 2) {
+        _urlMarker = 'assets/icons/driving_boat_red.png';
+      } else if (_allShip.arrayAPI[i].statusID > 3) {
+        _urlMarker = 'assets/icons/driving_boat_black.png';
+      } else if (_allShip.arrayAPI[i].latitude == 0 &&
+          _allShip.arrayAPI[i].longitude == 0) {
+        _urlMarker = "assets/icons/destination_map_marker.png";
+      } else {
+        _urlMarker = "assets/icons/destination_map_red.png";
+      }
+      Marker resultMarker = Marker(
+          markerId: MarkerId(_allShip.arrayAPI[i].imei),
+          position: LatLng(
+              _allShip.arrayAPI[i].latitude, _allShip.arrayAPI[i].longitude),
+          onTap: () {
+            setState(() {
               if (_allShip.arrayAPI[i].statusID == 3) {
                 _pinPath = "assets/icons/driving_boat_greens.png";
                 _avatarPath = "assets/images/friend1.jpg";
@@ -326,31 +419,27 @@ class _MapPageState extends State<MapPage> {
                 _labelColor = Colors.purple;
                 _status = 'Chưa kích hoạt';
               }
-                currentlySelectedPin = PinInformation(
-                  vehicalNumber: _allShip.arrayAPI[i].tentau,
-                  location: LatLng(_allShip.arrayAPI[i].latitude,
-                      _allShip.arrayAPI[i].longitude),
-                  pinPath: _pinPath,
-                  avatarPath: _avatarPath,
-                  labelColor: _labelColor,
-                  address: "",
-                  status: _status,
-                  timeSave: _allShip.arrayAPI[i].dateSave,
-                );
-                pinPillPosition = 0;
-              });
-            },
-            icon: await BitmapDescriptor.fromAssetImage(
-                  ImageConfiguration(devicePixelRatio: 2.5),
-                  _urlMarker)
-            
-          );
-        // Add it to Set
-        _markers.add(resultMarker);      
-      }
+              currentlySelectedPin = PinInformation(
+                vehicalNumber: _allShip.arrayAPI[i].tentau,
+                location: LatLng(_allShip.arrayAPI[i].latitude,
+                    _allShip.arrayAPI[i].longitude),
+                pinPath: _pinPath,
+                avatarPath: _avatarPath,
+                labelColor: _labelColor,
+                address: "",
+                status: _status,
+                timeSave: _allShip.arrayAPI[i].dateSave,
+              );
+              pinPillPosition = 0;
+            });
+          },
+          icon: await BitmapDescriptor.fromAssetImage(
+              ImageConfiguration(devicePixelRatio: 2.5), _urlMarker));
+      // Add it to Set
+      _markers.add(resultMarker);
     }
+  }
 
-  
   Widget buildSearchBar() {
     final actions = [
       FloatingSearchBarAction(
