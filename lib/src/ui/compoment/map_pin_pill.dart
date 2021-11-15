@@ -54,12 +54,13 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                               child: Icon(
                                 Icons.circle,
                                 color: widget.currentlySelectedPin.labelColor,
-                                size: 10,
+                                size: 15,
                               ),
                             ),
                             Text(
                               widget.currentlySelectedPin.vehicalNumber,
                               style: TextStyle(
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   color:
                                       widget.currentlySelectedPin.labelColor),
@@ -76,13 +77,13 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                               child: Icon(
                                 Icons.watch_later,
                                 color: Colors.grey.shade700,
-                                size: 12,
+                                size: 15,
                               ),
                             ),
                             Text(
                               widget.currentlySelectedPin.timeSave,
                               style: TextStyle(
-                                  fontSize: 12, color: Colors.grey.shade700),
+                                  fontSize: 14, color: Colors.grey.shade700),
                             ),
                           ],
                         ),
@@ -96,13 +97,13 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                               child: Icon(
                                 Icons.location_on,
                                 color: Colors.grey.shade700,
-                                size: 12,
+                                size: 15,
                               ),
                             ),
                             Text(
                               '${widget.currentlySelectedPin.location.latitude.toString()}, ${widget.currentlySelectedPin.location.longitude.toString()}',
                               style: TextStyle(
-                                  fontSize: 12, color: Colors.grey.shade700),
+                                  fontSize: 14, color: Colors.grey.shade700),
                             ),
                           ],
                         ),
@@ -114,7 +115,7 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                           child: Text(
                             widget.currentlySelectedPin.address,
                             style: TextStyle(
-                                fontSize: 12, color: Colors.grey.shade700),
+                                fontSize: 14, color: Colors.grey.shade700),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),

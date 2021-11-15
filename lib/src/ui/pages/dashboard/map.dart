@@ -83,14 +83,13 @@ class _MapPageState extends State<MapPage> {
           actions: [
             Padding(
                 padding: EdgeInsets.only(right: 8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    searchMapPins();
+                child: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    setState(() {
+                      searchMapPins();
+                    });
                   },
-                  child: Icon(
-                    Icons.search,
-                    size: 26.0,
-                  ),
                 )),
             PopupMenuButton(
               icon: Icon(Icons.more_vert),
@@ -428,13 +427,13 @@ class _MapPageState extends State<MapPage> {
                 labelColor: _labelColor,
                 address: "",
                 status: _status,
-                timeSave: _allShip.arrayAPI[i].dateSave,
+                timeSave: _allShip.arrayAPI[i].dateSave.replaceAll('T', ' | '),
               );
               pinPillPosition = 0;
             });
           },
           icon: await BitmapDescriptor.fromAssetImage(
-              ImageConfiguration(devicePixelRatio: 2.5), _urlMarker));
+              const ImageConfiguration(devicePixelRatio: 2.5), _urlMarker));
       // Add it to Set
       _markers.add(resultMarker);
     }
