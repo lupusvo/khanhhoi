@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sea_demo01/src/repositories/categories_list.dart'
     as categoriesList;
 import 'package:sea_demo01/src/ui/pages/user/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
         ),
         elevation: 0.5,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -35,9 +36,9 @@ class _MenuPageState extends State<MenuPage> {
         ),
       ),
       body: categoriesList.list == null
-          ? const Center(child: const CircularProgressIndicator())
+          ? const Center(child:  CircularProgressIndicator())
           : new GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3, mainAxisSpacing: 25.0),
               padding: const EdgeInsets.all(10.0),
               itemCount: categoriesList.list.length,
@@ -95,7 +96,7 @@ class _MenuPageState extends State<MenuPage> {
                           ),
                         ],
                       ),
-                      onTap: () {
+                      onTap: () async{
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

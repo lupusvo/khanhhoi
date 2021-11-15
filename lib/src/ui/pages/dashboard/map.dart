@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:sea_demo01/src/model/shipuser_model.dart';
 import 'package:sea_demo01/src/repositories/all_ship.dart';
 import 'package:sea_demo01/src/repositories/pin_pill_info.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
 import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
 import 'device_list_page.dart';
-import 'map_google.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -32,7 +33,6 @@ class _MapPageState extends State<MapPage> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPIKey = 'AIzaSyDO5GoIsghz2hD3oi3CuhDxNgKuN3Gz7KE';
-  late BitmapDescriptor iconMaps,allIcon,runIcon,pauseIcon,disIcon,gpsIcon;
   double pinPillPosition = -120;
   PinInformation currentlySelectedPin = PinInformation(
     pinPath: 'assets/icons/driving_pin.png',
@@ -44,23 +44,17 @@ class _MapPageState extends State<MapPage> {
     status: '',
     timeSave: '',
   );
-  late PinInformation sourcePinInfo;
-  late PinInformation destinationPinInfo;
-
-  @override
-  void initState() {
-    super.initState();
-    _allShip.getAllShipByUserId();
-    setSourceAndDestinationIcons();
-  }
+  CameraPosition initialLocation = const CameraPosition(
+      zoom: 5.5,
+      bearing: 0,
+      tilt: 0,
+      target: LatLng(16.20088017579864, 105.80583502701335)
+    );
+  TextEditingController _searchControler = new TextEditingController();
 
   @override
   Widget build(BuildContext context){
-    CameraPosition initialLocation = CameraPosition(
-        zoom: CAMERA_ZOOM,
-        bearing: CAMERA_BEARING,
-        tilt: CAMERA_TILT,
-        target: LatLng(16.20088017579864, 105.80583502701335));
+    
     return Scaffold (
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -69,10 +63,11 @@ class _MapPageState extends State<MapPage> {
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(20)),
           child: TextFormField(
-            decoration: InputDecoration(
+            style: const TextStyle(fontSize: 20, color: Colors.black),
+            controller: _searchControler,
+            decoration: const InputDecoration(
               hintText: 'Nhập biển số xe',
               hintStyle: TextStyle(color: Colors.grey),
-              icon: Icon(Icons.search),
               contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 1),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.cyan),
@@ -80,10 +75,23 @@ class _MapPageState extends State<MapPage> {
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.cyan),
               ),
+              
             ),
           ),
         ),
         actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              onTap: () {
+                searchMapPins();
+              },
+              child: Icon(
+                Icons.search,
+                size: 26.0,
+              ),
+            )
+          ),
           PopupMenuButton(
             icon: Icon(Icons.more_vert),
             itemBuilder: (BuildContext context) => <PopupMenuEntry>[
@@ -93,9 +101,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      _allShip.arrayAPI.clear();
+                      pinPillPosition = -120;
                       _allShip.arrayAPI = _allShip.allShipByUserId;
-                      iconMaps=allIcon;
                       setMapPins();
                     });
                   },
@@ -113,9 +120,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      _allShip.arrayAPI.clear();
+                      pinPillPosition = -120;
                       _allShip.arrayAPI = _allShip.runingShipByUserId;
-                      iconMaps = runIcon;
                       setMapPins();
                     });
                   },
@@ -132,9 +138,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      _allShip.arrayAPI.clear();
+                      pinPillPosition = -120;
                       _allShip.arrayAPI = _allShip.pauseShipByUserId;
-                      iconMaps = pauseIcon;
                       setMapPins();
                     });
                   },
@@ -151,9 +156,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      _allShip.arrayAPI.clear();
+                      pinPillPosition = -120;
                       _allShip.arrayAPI = _allShip.disShipByUserId;
-                      iconMaps = disIcon;
                       setMapPins();
                     });
                   },
@@ -170,9 +174,8 @@ class _MapPageState extends State<MapPage> {
                   color: Colors.white,
                   onPressed: () {
                     setState(() {
-                      _allShip.arrayAPI.clear();
+                      pinPillPosition = -120;
                       _allShip.arrayAPI=_allShip.gpsShipByUserId;
-                      iconMaps = gpsIcon;
                       setMapPins();
                     });
                   },
@@ -210,14 +213,15 @@ class _MapPageState extends State<MapPage> {
         },
       ),
       MapPinPillComponent(
-          pinPillPosition: pinPillPosition,
-          currentlySelectedPin: currentlySelectedPin)
+      pinPillPosition: pinPillPosition,
+      currentlySelectedPin: currentlySelectedPin),
     ]),
     );
   }
   
+
   setPolylines() async {
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+    /*PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         googleAPIKey,
         PointLatLng(SOURCE_LOCATION.latitude, SOURCE_LOCATION.longitude),
         PointLatLng(DEST_LOCATION.latitude, DEST_LOCATION.longitude));
@@ -234,54 +238,106 @@ class _MapPageState extends State<MapPage> {
             points: polylineCoordinates);
         _polylines.add(polyline);
       });
-    }
+    }*/
   }
 
-   void onMapCreated(controller){
+   void onMapCreated(controller) {
     //controller.setMapStyle(Utils.mapStyles);
     _controller.complete(controller);
-    setMapPins();
-    setPolylines();
-
+    getMarker();
+  }
+  void getMarker() async{
+    await _allShip.getAllShipByUserId();
+    _allShip.arrayAPI = _allShip.allShipByUserId;
+    setState(() {
+      setMapPins();
+    });
+  }
+  void searchMapPins() {
+    _allShip.arrayAPI = _allShip.allShipByUserId;
+    List<AllShipByUserId> shipByUserId = [];
+    for (int i = 0; i < _allShip.arrayAPI.length; i++){
+      if(_allShip.arrayAPI[i].tentau == _searchControler.text){
+        shipByUserId.add(_allShip.arrayAPI[i]);
+      }
+    }
+    _allShip.arrayAPI = shipByUserId;
+    setState(() {
+      pinPillPosition = -120;
+      setMapPins();
+    });
   }
   void setMapPins() async{
-      //_markers.clear();
+      _markers.clear();
+      String _pinPath, _avatarPath, _address, _status;
+      String _urlMarker = '';
+      late Color _labelColor;
       for (int i = 0; i < _allShip.arrayAPI.length; i++){
-        String _pinPath, _avatarPath, _address, _status;
-        Color _labelColor;
+        if (_allShip.arrayAPI[i].statusID == 3) {
+          _pinPath = "assets/icons/driving_boat_greens.png";
+          _avatarPath = "assets/images/friend1.jpg";
+          _labelColor = Colors.greenAccent;
+          _status = 'Đang hoạt động';
+          _urlMarker = 'assets/icons/driving_boat_greens.png';
+        } else if (_allShip.arrayAPI[i].statusID == 2) {
+          _pinPath = "assets/icons/driving_boat_red.png";
+          _avatarPath = "assets/images/friend1.jpg";
+          _labelColor = Colors.redAccent;
+          _status = 'Mất tính hiệu';
+          _urlMarker = 'assets/icons/driving_boat_red.png';
+        } else if (_allShip.arrayAPI[i].statusID > 3) {
+          _pinPath = "assets/icons/driving_boat_black.png";
+          _avatarPath = "assets/images/friend1.jpg";
+          _labelColor = Colors.black;
+          _status = 'Dừng';
+          _urlMarker = 'assets/icons/driving_boat_black.png';
+        } else if (_allShip.arrayAPI[i].latitude == 0 &&
+            _allShip.arrayAPI[i].longitude == 0) {
+          _pinPath = "assets/icons/destination_map_marker.png";
+          _avatarPath = "assets/images/friend1.jpg";
+          _labelColor = Colors.red;
+          _status = 'Mất tính hiệu GPS';
+          _urlMarker = "assets/icons/destination_map_marker.png";
+        } else {
+          _pinPath = "assets/icons/destination_map_red.png";
+          _avatarPath = "assets/images/friend2.jpg";
+          _labelColor = Colors.purple;
+          _status = 'Chưa kích hoạt';
+          _urlMarker = "assets/icons/destination_map_red.png";
+        }
         Marker resultMarker = Marker (
             markerId: MarkerId(_allShip.arrayAPI[i].imei),
             position: LatLng(_allShip.arrayAPI[i].latitude,
                 _allShip.arrayAPI[i].longitude),
             onTap: () {
               setState(() {
-                if (_allShip.arrayAPI[i].statusID == 3) {
-                  _pinPath = "assets/icons/driving_boat_greens.png";
-                  _avatarPath = "assets/images/friend1.jpg";
-                  _labelColor = Colors.greenAccent;
-                  _status = 'Đang hoạt động';
-                } else if (_allShip.arrayAPI[i].statusID == 2) {
-                  _pinPath = "assets/icons/driving_boat_red.png";
-                  _avatarPath = "assets/images/friend1.jpg";
-                  _labelColor = Colors.redAccent;
-                  _status = 'Mất tính hiệu';
-                } else if (_allShip.arrayAPI[i].speed == 0) {
-                  _pinPath = "assets/icons/driving_boat_black.png";
-                  _avatarPath = "assets/images/friend1.jpg";
-                  _labelColor = Colors.black;
-                  _status = 'Dừng';
-                } else if (_allShip.arrayAPI[i].latitude == 0 &&
-                    _allShip.arrayAPI[i].longitude == 0) {
-                  _pinPath = "assets/icons/driving_boat_red.png";
-                  _avatarPath = "assets/images/friend1.jpg";
-                  _labelColor = Colors.red;
-                  _status = 'Mất tính hiệu GPS';
-                } else {
-                  _pinPath = "assets/icons/destination_map_marker.png";
-                  _avatarPath = "assets/images/friend2.jpg";
-                  _labelColor = Colors.purple;
-                  _status = 'Chưa kích hoạt';
-                }
+              if (_allShip.arrayAPI[i].statusID == 3) {
+                _pinPath = "assets/icons/driving_boat_greens.png";
+                _avatarPath = "assets/images/friend1.jpg";
+                _labelColor = Colors.greenAccent;
+                _status = 'Đang hoạt động';
+              } else if (_allShip.arrayAPI[i].statusID == 2) {
+                _pinPath = "assets/icons/driving_boat_red.png";
+                _avatarPath = "assets/images/friend1.jpg";
+                _labelColor = Colors.redAccent;
+                _status = 'Mất tính hiệu';
+              } else if (_allShip.arrayAPI[i].statusID > 3) {
+                _pinPath = "assets/icons/driving_boat_black.png";
+                _avatarPath = "assets/images/friend1.jpg";
+                _labelColor = Colors.black;
+                _status = 'Dừng';
+              } else if (_allShip.arrayAPI[i].latitude == 0 &&
+                  _allShip.arrayAPI[i].longitude == 0) {
+                _pinPath = "assets/icons/destination_map_marker.png";
+                _avatarPath = "assets/images/friend1.jpg";
+                _labelColor = Colors.red;
+                _status = 'Mất tính hiệu GPS';
+              } else {
+                _pinPath = "assets/icons/destination_map_red.png";
+                _avatarPath = "assets/images/friend2.jpg";
+                _labelColor = Colors.purple;
+                _status = 'Chưa kích hoạt';
+              }
                 currentlySelectedPin = PinInformation(
                   vehicalNumber: _allShip.arrayAPI[i].tentau,
                   location: LatLng(_allShip.arrayAPI[i].latitude,
@@ -289,42 +345,24 @@ class _MapPageState extends State<MapPage> {
                   pinPath: _pinPath,
                   avatarPath: _avatarPath,
                   labelColor: _labelColor,
-                  address:
-                      'Phường 12, Thành phố Vũng Tầu, Bà Rịa - Vũng Tàu, Việt Nam',
+                  address: "",
                   status: _status,
                   timeSave: _allShip.arrayAPI[i].dateSave,
                 );
                 pinPillPosition = 0;
               });
             },
-            icon: iconMaps
+            icon: await BitmapDescriptor.fromAssetImage(
+                  ImageConfiguration(devicePixelRatio: 2.5),
+                  _urlMarker)
+            
           );
         // Add it to Set
         _markers.add(resultMarker);      
       }
     }
 
-  void setSourceAndDestinationIcons() async {
-    allIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/icons/driving_boat_blue.png');
-
-    runIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/icons/driving_boat_greens.png');
-        
-    pauseIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/icons/driving_boat_black.png');  
-
-    disIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/icons/driving_boat_red.png');  
-
-    gpsIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/icons/destination_map_marker.png');
-  }
+  
   Widget buildSearchBar() {
     final actions = [
       FloatingSearchBarAction(
@@ -373,7 +411,6 @@ class _MapPageState extends State<MapPage> {
         Expanded(
           child: Stack(
             children: const [
-              Map(),
               SomeScrollableContent(),
               FloatingSearchAppBarExample(),
             ],
@@ -476,23 +513,5 @@ class FloatingSearchAppBarExample extends StatelessWidget {
         },
       ),
     );
-  }
-}
-
-class Map extends StatelessWidget {
-  const Map({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        buildMap(),
-      ],
-    );
-  }
-
-  Widget buildMap() {
-    return const MapGoogle();
   }
 }
