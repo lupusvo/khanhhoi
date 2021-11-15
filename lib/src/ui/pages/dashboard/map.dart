@@ -253,7 +253,7 @@ class _MapPageState extends State<MapPage> {
       setMapPins();
     });
   }
-  void searchMapPins() {
+  void searchMapPins() async{
     _allShip.arrayAPI = _allShip.allShipByUserId;
     List<AllShipByUserId> shipByUserId = [];
     for (int i = 0; i < _allShip.arrayAPI.length; i++){
@@ -262,6 +262,12 @@ class _MapPageState extends State<MapPage> {
       }
     }
     _allShip.arrayAPI = shipByUserId;
+    SmartDialog.showLoading(
+            backDismiss: false,
+            msg: 'Đang tải',
+          );
+    await Future.delayed(const Duration(seconds: 1));
+    SmartDialog.dismiss();
     setState(() {
       pinPillPosition = -120;
       setMapPins();
