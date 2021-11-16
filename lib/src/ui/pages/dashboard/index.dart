@@ -1,1 +1,1 @@
-export 'map.dart';
+export 'map_google.dart';

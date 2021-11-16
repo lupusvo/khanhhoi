@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sea_demo01/src/repositories/lesson.dart';
+import 'package:sea_demo01/src/model/lesson.dart';
 
 class DetailAlterPage extends StatelessWidget {
   final Lesson lesson;
@@ -10,9 +10,9 @@ class DetailAlterPage extends StatelessWidget {
     final levelIndicator = Container(
       child: Container(
         child: LinearProgressIndicator(
-            backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
+            backgroundColor: const Color.fromRGBO(209, 224, 224, 0.2),
             value: lesson.indicatorValue,
-            valueColor: AlwaysStoppedAnimation(Colors.green)),
+            valueColor: const AlwaysStoppedAnimation(Colors.green)),
       ),
     );
 
@@ -30,8 +30,8 @@ class DetailAlterPage extends StatelessWidget {
     final topContentText = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SizedBox(height: 120.0),
-        Icon(
+        const SizedBox(height: 120.0),
+        const Icon(
           Icons.directions_car,
           color: Colors.white,
           size: 40.0,
@@ -40,10 +40,10 @@ class DetailAlterPage extends StatelessWidget {
           width: 90.0,
           child: new Divider(color: Colors.green),
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Text(
           lesson.title,
-          style: TextStyle(color: Colors.white, fontSize: 45.0),
+          style: const TextStyle(color: Colors.white, fontSize: 45.0),
         ),
       ],
     );

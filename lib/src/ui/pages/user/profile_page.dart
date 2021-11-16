@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sea_demo01/src/model/infouser_model.dart';
-import 'package:sea_demo01/src/repositories/InfoUserByUserName.dart';
+import 'package:sea_demo01/src/repositories/infouser_username.dart';
 import 'package:sea_demo01/src/ui/compoment/compoment.dart';
 
 class ProfilePage extends StatefulWidget {

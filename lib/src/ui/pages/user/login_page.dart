@@ -6,7 +6,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sea_demo01/generated/l10n.dart';
 import 'package:sea_demo01/src/blocs/Login/auth_bloc.dart';
-import 'package:sea_demo01/src/repositories/InfoUserByUserName.dart';
+import 'package:sea_demo01/src/repositories/infouser_username.dart';
 import 'package:sea_demo01/src/ui/compoment/compoment.dart';
 import 'package:sea_demo01/src/ui/screen.dart';
 import 'package:sea_demo01/src/ui/themes/index.dart';
@@ -69,21 +69,21 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SafeArea(
                   child: Container(
-                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      margin: EdgeInsets.fromLTRB(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      margin: const EdgeInsets.fromLTRB(
                           20, 10, 20, 10), // This will be the login form
                       child: Column(
                         children: [
-                          Text(
+                          const Text(
                             'Hello',
                             style: TextStyle(
                                 fontSize: 60, fontWeight: FontWeight.bold),
                           ),
-                          Text(
+                          const Text(
                             'Signin into your account',
                             style: TextStyle(color: Colors.grey),
                           ),
-                          SizedBox(height: 30.0),
+                          const SizedBox(height: 30.0),
                           Form(
                               key: _formKey,
                               child: Column(
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                                     decoration: ThemeHelper()
                                         .inputBoxDecorationShaddow(),
                                   ),
-                                  SizedBox(height: 30.0),
+                                  const SizedBox(height: 30.0),
                                   Container(
                                     child: StreamBuilder(
                                       stream: bloc.passStream,
@@ -128,9 +128,9 @@ class _LoginPageState extends State<LoginPage> {
                                     decoration: ThemeHelper()
                                         .inputBoxDecorationShaddow(),
                                   ),
-                                  SizedBox(height: 15.0),
+                                  const SizedBox(height: 15.0),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+                                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                                     alignment: Alignment.topRight,
                                     child: GestureDetector(
                                       onTap: () {
@@ -138,10 +138,10 @@ class _LoginPageState extends State<LoginPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ForgotPasswordPage()),
+                                                  const ForgotPasswordPage()),
                                         );
                                       },
-                                      child: Text(
+                                      child: const Text(
                                         "Forgot your password?",
                                         style: TextStyle(
                                           color: Colors.grey,
@@ -156,13 +156,13 @@ class _LoginPageState extends State<LoginPage> {
                                       style: ThemeHelper().buttonStyle(),
                                       child: Padding(
                                         padding:
-                                            EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                            const EdgeInsets.fromLTRB(40, 10, 40, 10),
                                         child: Text(
                                           S
                                               .of(context)
                                               .authPageButtonLogin
                                               .toUpperCase(),
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
@@ -179,10 +179,10 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                    margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
                                     //child: Text('Don\'t have an account? Create'),
                                     child: Text.rich(TextSpan(children: [
-                                      TextSpan(
+                                      const TextSpan(
                                           text: "Don\'t have an account? "),
                                       TextSpan(
                                         text: 'Create',
@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        RegistrationPage()));
+                                                       const RegistrationPage()));
                                           },
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,

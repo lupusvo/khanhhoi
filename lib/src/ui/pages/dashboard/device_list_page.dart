@@ -1,11 +1,10 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sea_demo01/src/ui/pages/alters/index.dart';
+import 'package:sea_demo01/src/ui/pages/dashboard/map_google.dart';
 import 'package:sea_demo01/src/ui/pages/menu/index.dart';
 import 'package:sea_demo01/src/ui/pages/reports/index.dart';
 import 'package:sea_demo01/src/ui/pages/user/index.dart';
-
-import 'index.dart';
 
 class DeviceListPage extends StatefulWidget {
   const DeviceListPage({Key? key}) : super(key: key);

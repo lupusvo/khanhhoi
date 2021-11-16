@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 // Colors
-const _primaryColor = Color(0xff191720);
-const _accentColor = Color(0xff1E1C24);
+const _primaryColor = Color(0XFF191720);
+const _accentColor = Color(0XFF1E1C24);
 // TextStyles
 const kHeadline = TextStyle(
   color: Colors.white,

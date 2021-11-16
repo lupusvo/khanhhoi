@@ -1,8 +1,8 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-
+import 'pages/dashboard/map_mapbox.dart';
 import 'pages/alters/index.dart';
-import 'pages/dashboard/map.dart';
+import 'pages/dashboard/map_google.dart';
 import 'pages/menu/index.dart';
 import 'pages/reports/index.dart';
 import 'pages/user/profile_page.dart';
@@ -19,7 +19,7 @@ class _ScreenMainState extends State<ScreenMain> {
   final List<Widget> screens = [
     const AlterPage(),
     const ReportPage(),
-    const MapPage(),
+    const MapBoxPage(),
     const ProfilePage(),
     const MenuPage(),
   ];
@@ -28,7 +28,7 @@ class _ScreenMainState extends State<ScreenMain> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: ConvexAppBar(
-        backgroundColor: Color(0xFF009688),
+        backgroundColor: const Color(0xFF009688),
         items: [
           TabItem(icon: Icons.notifications, title: 'Thông báo'),
           TabItem(icon: Icons.article, title: 'Báo cáo'),

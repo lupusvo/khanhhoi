@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sea_demo01/src/repositories/lesson.dart';
+import 'package:sea_demo01/src/model/lesson.dart';
 
 import 'detail_alter.dart';
 

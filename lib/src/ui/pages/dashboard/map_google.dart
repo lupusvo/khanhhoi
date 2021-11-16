@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:sea_demo01/src/model/shipuser_model.dart';
 import 'package:sea_demo01/src/repositories/all_ship.dart';
-import 'package:sea_demo01/src/repositories/pin_pill_info.dart';
+import 'package:sea_demo01/src/model/pin_pill_info.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
 import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sea_demo01/src/ui/pages/dashboard/map_mapbox.dart';
 import 'device_list_page.dart';
 
 class MapPage extends StatefulWidget {
@@ -28,31 +25,23 @@ class _MapPageState extends State<MapPage> {
   Icon actionIcon = Icon(Icons.search);
   Choice _selectedChoice = choices[0];
   // marker
-  final _allShip = new AllShip();
+  AllShip _allShip = new AllShip();
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = Set();
   Set<Polyline> _polylines = {};
   List<LatLng> polylineCoordinates = [];
+  MapBoxPage _mapBoxPage = new  MapBoxPage();
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPIKey = 'AIzaSyDO5GoIsghz2hD3oi3CuhDxNgKuN3Gz7KE';
   double pinPillPosition = -120;
-  PinInformation currentlySelectedPin = PinInformation(
-    pinPath: 'assets/icons/driving_pin.png',
-    avatarPath: 'assets/images/friend1.jpg',
-    location: LatLng(0, 0),
-    vehicalNumber: 'Start Location',
-    labelColor: Colors.grey,
-    address: '',
-    status: '',
-    timeSave: '',
-  );
+  PinInformation currentlySelectedPin = MapBoxPage().createState().currentlySelectedPin;
   CameraPosition initialLocation = const CameraPosition(
       zoom: 5.5,
       bearing: 0,
       tilt: 0,
       target: LatLng(10.7553411,106.4150405));
   TextEditingController _searchControler = new TextEditingController();
-
+  
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -87,7 +76,7 @@ class _MapPageState extends State<MapPage> {
                   icon: const Icon(Icons.search),
                   onPressed: () {
                     setState(() {
-                      searchMapPins();
+                      _mapBoxPage.createState().searchMapPins();
                     });
                   },
                 )),
@@ -253,8 +242,8 @@ class _MapPageState extends State<MapPage> {
                       height: 50.0,
                       color: Colors.white,
                       onPressed: () {
-                        clearData();
-                        //exit(0);
+                        
+                        _mapBoxPage.createState().clearData();
                       },
                       child: Row(
                         children: [
@@ -325,13 +314,8 @@ class _MapPageState extends State<MapPage> {
       });
     }*/
   }
-  void clearData() async{
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
-    exit(0);
-  }
+
   void onMapCreated(controller) {
-    //controller.setMapStyle(Utils.mapStyles);
     _controller.complete(controller);
     getMarker();
   }
@@ -342,29 +326,6 @@ class _MapPageState extends State<MapPage> {
     setState(() {
       setMapPins();
     });
-  }
-
-  void searchMapPins() async {
-    _allShip.arrayAPI = _allShip.allShipByUserId;
-    List<AllShipByUserId> shipByUserId = [];
-    for (int i = 0; i < _allShip.arrayAPI.length; i++) {
-      if (_allShip.arrayAPI[i].tentau == _searchControler.text) {
-        shipByUserId.add(_allShip.arrayAPI[i]);
-      }
-    }
-    if (shipByUserId.length > 0) {
-      _allShip.arrayAPI = shipByUserId;
-      SmartDialog.showLoading(
-        backDismiss: false,
-        msg: "đang tải",
-      );
-      await Future.delayed(const Duration(seconds: 1));
-      SmartDialog.dismiss();
-      setState(() {
-        pinPillPosition = -120;
-        setMapPins();
-      });
-    }
   }
 
   void setMapPins() async {

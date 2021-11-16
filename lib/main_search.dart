@@ -1,12 +1,10 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:sea_demo01/src/repositories/place.dart';
+import 'package:sea_demo01/src/model/place.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
 
 void main() {

@@ -1,4 +1,5 @@
 class Validations{
+  static bool internet = true;
   static bool isValidUser(String user){
     return user != null && user.length >= 6 && user.length <= 30 ;
   }

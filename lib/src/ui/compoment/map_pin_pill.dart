@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sea_demo01/src/repositories/pin_pill_info.dart';
+import 'package:sea_demo01/src/model/pin_pill_info.dart';
 
 class MapPinPillComponent extends StatefulWidget {
   double pinPillPosition;
@@ -19,15 +19,15 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
       bottom: widget.pinPillPosition,
       right: 0,
       left: 0,
-      duration: Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 200),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          margin: EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           height: 100,
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(50)),
+              borderRadius:const BorderRadius.all(Radius.circular(50)),
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     blurRadius: 20,
@@ -42,7 +42,7 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                 child: Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 20),
+                    margin: const EdgeInsets.only(left: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +107,7 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 3, // default\minimum height
                         ),
                         Container(
@@ -126,7 +126,7 @@ class MapPinPillComponentState extends State<MapPinPillComponent> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 child: Image.asset(widget.currentlySelectedPin.pinPath,
                     width: 50, height: 50),
               )
