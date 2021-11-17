@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:sea_demo01/LanguageChangeProvider.dart';
 import 'package:sea_demo01/generated/l10n.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
+import 'repositories/bin_ding.dart';
 import 'ui/compoment/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -17,10 +19,11 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider<LanguageChangeProvider>(
       create: (context) => LanguageChangeProvider(),
       child: Builder(
-        builder: (context) => MaterialApp(
+        builder: (context) => GetMaterialApp(
           //locale: new Locale('vi'),
           locale: Provider.of<LanguageChangeProvider>(context, listen: true)
               .currentLocale,
+          initialBinding: Binding(),
           localizationsDelegates: [
             S.delegate,
             GlobalMaterialLocalizations.delegate,

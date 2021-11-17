@@ -130,7 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   const SizedBox(height: 15.0),
                                   Container(
-                                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+                                    margin: const EdgeInsets.fromLTRB(
+                                        10, 0, 10, 20),
                                     alignment: Alignment.topRight,
                                     child: GestureDetector(
                                       onTap: () {
@@ -155,8 +156,8 @@ class _LoginPageState extends State<LoginPage> {
                                     child: ElevatedButton(
                                       style: ThemeHelper().buttonStyle(),
                                       child: Padding(
-                                        padding:
-                                            const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            40, 10, 40, 10),
                                         child: Text(
                                           S
                                               .of(context)
@@ -179,7 +180,8 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   Container(
-                                    margin: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                    margin: const EdgeInsets.fromLTRB(
+                                        10, 20, 10, 20),
                                     //child: Text('Don\'t have an account? Create'),
                                     child: Text.rich(TextSpan(children: [
                                       const TextSpan(
@@ -192,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                       const RegistrationPage()));
+                                                        const RegistrationPage()));
                                           },
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -224,38 +226,42 @@ class _LoginPageState extends State<LoginPage> {
         'ClientIP': ip,
       };
       Map body = {"UserName_": UserName, "pass_": PassWord, "type_": Type};
-      var jsonResponse;
-      var res = await http.post(url,
-          headers: requestHeaders, body: json.encode(body));
-      if (res.statusCode == 200) {
-        jsonResponse = json.decode(res.body);
-        if (jsonResponse != null) {
-          setState(() {
-            _isLoading = false;
-          });
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('token', jsonResponse.toString());
-          prefs.setString('user', UserName.toString());
-          prefs.setString('pass', PassWord.toString());
-          await _infoUserByUserName.getInfoUserByUserName();
-          SmartDialog.showLoading(
-            backDismiss: false,
-            msg: 'Đang tải',
-          );
-          await Future.delayed(Duration(seconds: 2));
-          SmartDialog.dismiss();
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => ScreenMain()));
-        } else {
-          Fluttertoast.showToast(
-              msg: "Tài khoản hoặc mật khẩu không đúng. Vui lòng nhập lại!",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Color.fromRGBO(70, 70, 70, 1.0),
-              textColor: Colors.white,
-              fontSize: 12.0);
+      try {
+        var res = await http.post(url,
+            headers: requestHeaders, body: json.encode(body));
+        if (res.statusCode == 200) {
+          var jsonResponse = json.decode(res.body);
+          if (jsonResponse != null) {
+            setState(() {
+              _isLoading = false;
+            });
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setString('token', jsonResponse.toString());
+            prefs.setString('user', UserName.toString());
+            prefs.setString('pass', PassWord.toString());
+            await _infoUserByUserName.getInfoUserByUserName();
+            SmartDialog.showLoading(
+              backDismiss: false,
+              msg: 'Đang tải',
+            );
+            await Future.delayed(Duration(seconds: 2));
+            SmartDialog.dismiss();
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => ScreenMain()));
+          } else {
+            Fluttertoast.showToast(
+                msg: "Tài khoản hoặc mật khẩu không đúng. Vui lòng nhập lại!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Color.fromRGBO(70, 70, 70, 1.0),
+                textColor: Colors.white,
+                fontSize: 12.0);
+          }
         }
+      } catch (e) {
+        print(e);
+        SmartDialog.showToast("Đường truyền mất kết nối!!!");
       }
     }
   }

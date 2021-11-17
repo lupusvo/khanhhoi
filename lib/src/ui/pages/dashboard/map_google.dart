@@ -41,47 +41,77 @@ class _MapPageState extends State<MapPage> {
       tilt: 0,
       target: LatLng(10.7553411,106.4150405));
   TextEditingController _searchControler = new TextEditingController();
-  
+  //search
+  List<String> foodList = [];
+  List<String>? foodListSearch =[];
+  final FocusNode _textFocusNode = FocusNode();
+  bool isVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
+          leading: Visibility(
+            visible: isVisible,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  isVisible = false;
+                  _searchControler.text = "";
+                  foodListSearch = [];
+                  _mapBoxPage.createState().searchMapPins();
+                });
+              })
+          ),
           title: Container(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            width: 300,
+            height: 35,
+            padding: const EdgeInsets.symmetric(horizontal: 15),
             decoration: BoxDecoration(
                 color: Colors.white, borderRadius: BorderRadius.circular(20)),
-            child: TextFormField(
-              style: const TextStyle(fontSize: 20, color: Colors.black),
+            child: TextField(
               controller: _searchControler,
+              focusNode: _textFocusNode,
+              cursorColor: Colors.black,
               decoration: const InputDecoration(
-                hintText: 'Nhập biển số xe',
-                hintStyle: TextStyle(color: Colors.grey),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.cyan),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.cyan),
-                ),
-              ),
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  hintText: 'Biển số tàu cần tìm...',
+                  contentPadding: EdgeInsets.all(8)),
+              onChanged: (value) {
+                setState(() {
+                  foodList = _allShip.shipList;
+                  
+                  foodListSearch = foodList
+                      .where((element) => element.contains(value.toLowerCase()))
+                      .toList();
+                  if (_searchControler.text.isNotEmpty &&
+                      foodListSearch!.length == 0) {
+                        isVisible = true;
+                        print('foodListSearch length ${foodListSearch!.length}');
+                  }
+                });
+              },
             ),
           ),
           actions: [
-            Padding(
-                padding: EdgeInsets.only(right: 8.0),
-                child: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    setState(() {
-                      _mapBoxPage.createState().searchMapPins();
-                    });
-                  },
-                )),
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                setState(() {
+                  foodListSearch = [];
+                  _mapBoxPage.createState().searchMapPins();
+                });
+              },
+            ),
             PopupMenuButton(
-              icon: Icon(Icons.more_vert),
+              icon: const Icon(Icons.more_vert),
               itemBuilder: (BuildContext context) => <PopupMenuEntry>[
                 PopupMenuItem(
                   child: FlatButton(
@@ -92,6 +122,7 @@ class _MapPageState extends State<MapPage> {
                           pinPillPosition = -120;
                           _allShip.arrayAPI = _allShip.allShipByUserId;
                           setMapPins();
+                          _mapBoxPage.createState().handleTap();
                         });
                       },
                       child: Row(
@@ -120,6 +151,7 @@ class _MapPageState extends State<MapPage> {
                           pinPillPosition = -120;
                           _allShip.arrayAPI = _allShip.runingShipByUserId;
                           setMapPins();
+                          _mapBoxPage.createState().handleTap();
                         });
                       },
                       child: Row(
@@ -151,6 +183,7 @@ class _MapPageState extends State<MapPage> {
                           pinPillPosition = -120;
                           _allShip.arrayAPI = _allShip.pauseShipByUserId;
                           setMapPins();
+                          _mapBoxPage.createState().handleTap();
                         });
                       },
                       child: Row(
@@ -182,6 +215,7 @@ class _MapPageState extends State<MapPage> {
                           pinPillPosition = -120;
                           _allShip.arrayAPI = _allShip.disShipByUserId;
                           setMapPins();
+                          _mapBoxPage.createState().handleTap();
                         });
                       },
                       child: Row(
@@ -213,6 +247,7 @@ class _MapPageState extends State<MapPage> {
                           pinPillPosition = -120;
                           _allShip.arrayAPI = _allShip.gpsShipByUserId;
                           setMapPins();
+                          _mapBoxPage.createState().handleTap();
                         });
                       },
                       child: Row(
@@ -241,13 +276,36 @@ class _MapPageState extends State<MapPage> {
                   child: FlatButton(
                       height: 50.0,
                       color: Colors.white,
-                      onPressed: () {
-                        
-                        _mapBoxPage.createState().clearData();
-                      },
+                      onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: const Text("Đăng xuất",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold)),
+                                content: const Text(
+                                    "Bạn có chắc chắn muốn đăng xuất không?"),
+                                actions: [
+                                  FlatButton(
+                                    child: const Text("Không",
+                                        style: TextStyle(color: Colors.blue)),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: const Text("Có",
+                                        style: TextStyle(color: Colors.blue)),
+                                    onPressed: () {
+                                      _mapBoxPage.createState().clearData();
+                                    },
+                                  )
+                                ],
+                                elevation: 24.0,
+                              )),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.exit_to_app,
                             color: Colors.blueGrey,
                           ),
@@ -269,26 +327,59 @@ class _MapPageState extends State<MapPage> {
             width: 200,
           ),
         ),
-        body: Stack(children: <Widget>[
-          GoogleMap(
-            myLocationEnabled: true,
-            compassEnabled: true,
-            tiltGesturesEnabled: false,
-            onMapCreated: onMapCreated,
-            markers: _markers,
-            polylines: _polylines,
-            mapType: MapType.normal,
-            initialCameraPosition: initialLocation,
-            onTap: (LatLng location) {
-              setState(() {
-                pinPillPosition = -120;
-              });
-            },
-          ),
-          MapPinPillComponent(
-              pinPillPosition: pinPillPosition,
-              currentlySelectedPin: currentlySelectedPin),
-        ]),
+        body: foodListSearch!.length == 0
+            ? Stack(children: <Widget>[
+                GoogleMap(
+                  myLocationEnabled: true,
+                  compassEnabled: true,
+                  tiltGesturesEnabled: false,
+                  onMapCreated: onMapCreated,
+                  markers: _markers,
+                  polylines: _polylines,
+                  mapType: MapType.normal,
+                  initialCameraPosition: initialLocation,
+                  onTap: (LatLng location) {
+                    setState(() {
+                      pinPillPosition = -120;
+                      _mapBoxPage.createState().handleKeybroad();
+                    });
+                  },
+                ),
+                MapPinPillComponent(
+                    pinPillPosition: pinPillPosition,
+                    currentlySelectedPin: currentlySelectedPin),
+              ]
+            )
+            : ListView.builder(
+                itemCount: _searchControler.text.isNotEmpty
+                    ? foodListSearch!.length
+                    : foodList.length,
+                itemBuilder: (ctx, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      child: Row(
+                        children: [
+                          const CircleAvatar(
+                            child: Icon(Icons.directions_boat),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(_searchControler.text.isNotEmpty
+                              ? foodListSearch![index]
+                              : foodList[index]),
+                        ],
+                      ),
+                      onTap: (){
+                        _searchControler.text = foodList[index];
+                        foodListSearch = [];
+                        _mapBoxPage.createState().searchMapPins();
+                      },
+                    ),
+                  );
+                }
+              ),
       ),
       onWillPop: () async => false,
     );

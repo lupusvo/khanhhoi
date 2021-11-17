@@ -1,5 +1,4 @@
 import 'package:sea_demo01/src/model/infouser_model.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_ipify/dart_ipify.dart';
 import 'package:http/http.dart' as http;

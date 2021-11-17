@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class AllShipByUserId {
   late String imei;
   late String imeiExt;
@@ -188,13 +190,5 @@ class AllShipByUserId {
     data['time_send_TCTS'] = this.timeSendTCTS;
     data['registered'] = this.registered;
     return data;
-  }
-
-  set setName(String name) {
-    tentau = name;
-  }
-
-  String get getName {
-    return tentau;
   }
 }

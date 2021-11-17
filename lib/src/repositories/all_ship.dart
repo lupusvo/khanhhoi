@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:sea_demo01/src/model/shipuser_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_ipify/dart_ipify.dart';
@@ -12,6 +13,7 @@ class AllShip{
   List<AllShipByUserId> pauseShipByUserId = [];
   List<AllShipByUserId> disShipByUserId = [];
   List<AllShipByUserId> gpsShipByUserId = [];
+  List<String> shipList = [];
 
   Future<void> getAllShipByUserId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -24,24 +26,29 @@ class AllShip{
        'ClientIP': ip,
        'ApiKey': ApiKey.toString(),
      };
-    var response = await http.get(url,headers:requestHeaders);
-    
-    var jsonData = convert.jsonDecode(response.body);
-    List<dynamic> body = convert.jsonDecode(response.body);
-    allShipByUserId = body.map((dynamic item) => AllShipByUserId.fromJson(item)).toList();
-    for(int i = 0 ; i < allShipByUserId.length;i++){
-      if(allShipByUserId[i].statusID == 3){
-        runingShipByUserId.add(allShipByUserId[i]);
+    try{
+      var response = await http.get(url,headers:requestHeaders);
+      var jsonData = convert.jsonDecode(response.body);
+      List<dynamic> body = convert.jsonDecode(response.body);
+      allShipByUserId = body.map((dynamic item) => AllShipByUserId.fromJson(item)).toList();
+      for(int i = 0 ; i < allShipByUserId.length;i++){
+        shipList.add(allShipByUserId[i].tentau);
+        if(allShipByUserId[i].statusID == 3){
+          runingShipByUserId.add(allShipByUserId[i]);
+        }
+        if(allShipByUserId[i].statusID > 3){
+          pauseShipByUserId.add(allShipByUserId[i]);
+        }
+        if(allShipByUserId[i].statusID == 2){
+          disShipByUserId.add(allShipByUserId[i]);
+        }
+        if(allShipByUserId[i].latitude == 0 && allShipByUserId[i].longitude == 0){
+          gpsShipByUserId.add(allShipByUserId[i]);
+        }
       }
-      if(allShipByUserId[i].statusID > 3){
-        pauseShipByUserId.add(allShipByUserId[i]);
-      }
-      if(allShipByUserId[i].statusID == 2){
-        disShipByUserId.add(allShipByUserId[i]);
-      }
-      if(allShipByUserId[i].latitude == 0 && allShipByUserId[i].longitude == 0){
-        gpsShipByUserId.add(allShipByUserId[i]);
-      }
+    }catch(e){
+      print(e);
+      SmartDialog.showToast("Đường truyền mất kết nối!!!");
     }
   }
 }
