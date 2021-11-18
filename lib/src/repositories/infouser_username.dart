@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sea_demo01/src/model/infouser_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dart_ipify/dart_ipify.dart';
@@ -11,7 +12,7 @@ class InfoUserByUserName{
       final ApiKey = prefs.getString('token');
       final username = prefs.getString('user');
       var url = Uri.parse(
-          'https://i-sea.khanhhoi.net/api/user/getInfobyUsername/'+username.toString());
+          dotenv.env['INFO_USER'].toString()+username.toString());
       final String ip = await Ipify.ipv4().toString();
       Map<String, String> requestHeaders = {
         'ClientIP': ip,

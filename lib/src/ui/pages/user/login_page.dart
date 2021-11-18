@@ -53,8 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     checkReloadLogin();
-    return WillPopScope(
-        child: Scaffold(
+    return Scaffold(
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
@@ -211,8 +210,7 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-        ),
-        onWillPop: () async => false);
+        );
   }
 
   Future<void> onSignInClicked(

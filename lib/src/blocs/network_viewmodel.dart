@@ -24,14 +24,11 @@ class NetworkViewModel extends GetxController {
     switch (result) {
       case ConnectivityResult.wifi:
         connectionStatus.value = 1;
-        SmartDialog.showToast("mất kết nối wifi");
         break;
       case ConnectivityResult.mobile:
         connectionStatus.value = 2;
-        SmartDialog.showToast("mất kết nối mobile");
         break;
       case ConnectivityResult.none:
-        SmartDialog.showToast("mất kết nối internet");
         connectionStatus.value = 0;
         break;
     }

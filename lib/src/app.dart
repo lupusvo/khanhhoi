@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:sea_demo01/LanguageChangeProvider.dart';
 import 'package:sea_demo01/generated/l10n.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
-import 'repositories/bin_ding.dart';
 import 'ui/compoment/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -23,8 +22,7 @@ class MyApp extends StatelessWidget {
           //locale: new Locale('vi'),
           locale: Provider.of<LanguageChangeProvider>(context, listen: true)
               .currentLocale,
-          initialBinding: Binding(),
-          localizationsDelegates: [
+          localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,

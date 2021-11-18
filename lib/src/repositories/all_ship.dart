@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:sea_demo01/src/model/shipuser_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +20,7 @@ class AllShip{
     final prefs = await SharedPreferences.getInstance();
     var ApiKey = prefs.getString('token');
     var id = prefs.getString('_id');
-    String _id = id.toString();
-    var url = Uri.parse('https://i-sea.khanhhoi.net/api/Ship/getAllship/'+_id);
+    var url = Uri.parse(dotenv.env['All_SHIP'].toString()+id.toString());
     final String ip = await Ipify.ipv4().toString();
     Map<String, String> requestHeaders = {
        'ClientIP': ip,
@@ -48,7 +48,7 @@ class AllShip{
       }
     }catch(e){
       print(e);
-      SmartDialog.showToast("Đường truyền mất kết nối!!!");
+      SmartDialog.showToast("Phiên làm việc hết hạng!!!");
     }
   }
 }

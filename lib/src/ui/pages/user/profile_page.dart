@@ -16,8 +16,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _infoUserByUserName = new InfoUserByUserName();
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: const Center(
             child: Text(
@@ -47,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: const HeaderCompoment(100, false, Icons.house_rounded),
               ),
               Container(
-                  child: FutureBuilder<InfoUser>(
+                child: FutureBuilder<InfoUser>(
                 future: _infoUserByUserName.getInfoUserByUserName(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -177,8 +176,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-      ),
-      onWillPop: () async => false,
-    );
+      );
   }
 }
