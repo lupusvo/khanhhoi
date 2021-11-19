@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:sea_demo01/src/controller/allship_controller.dart';
+import 'package:sea_demo01/src/controller/user_controller.dart';
 import 'package:sea_demo01/src/model/shipuser_model.dart';
-import 'package:sea_demo01/src/repositories/all_ship.dart';
 import 'package:sea_demo01/src/model/pin_pill_info.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
 import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
@@ -29,8 +31,10 @@ class _MapPageState extends State<MapPage> {
   Icon actionIcon = Icon(Icons.search);
   Choice _selectedChoice = choices[0];
   // marker
-  AllShip _allShip = new AllShip();
+  InfoUserController infoUserController = Get.put(InfoUserController());
+  AllShipController allShipController = Get.put(AllShipController());
   Completer<GoogleMapController> _controller = Completer();
+  List<AllShipByUserId> arrayAPI = [];
   Set<Marker> _markers = Set();
   Set<Polyline> _polylines = {};
   List<LatLng> polylineCoordinates = [];
@@ -87,7 +91,7 @@ class _MapPageState extends State<MapPage> {
                 contentPadding: EdgeInsets.all(8)),
             onChanged: (value) {
               setState(() {
-                foodList = _allShip.shipList;
+                foodList = allShipController.shipList;
                 foodListSearch = foodList
                     .where((element) => element.contains(value.toLowerCase()))
                     .toList();
@@ -120,7 +124,7 @@ class _MapPageState extends State<MapPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.allShipByUserId;
+                        arrayAPI = allShipController.allShipByUserIdList;
                         setMapPins();
                         Navigator.pop(context);
                       });
@@ -133,7 +137,7 @@ class _MapPageState extends State<MapPage> {
                         ),
                         Text(
                           "   Tất cả xe (" +
-                              _allShip.allShipByUserId.length.toString() +
+                              arrayAPI.length.toString() +
                               ")",
                           style:
                               const TextStyle(color: Colors.blue, fontSize: 16),
@@ -149,7 +153,7 @@ class _MapPageState extends State<MapPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.runingShipByUserId;
+                        arrayAPI = allShipController.runingShipByUserId;
                         setMapPins();
                         Navigator.pop(context);
                       });
@@ -162,7 +166,7 @@ class _MapPageState extends State<MapPage> {
                         ),
                         Text(
                           "   Đang chạy (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.statusID == 3)
                                   .length
@@ -181,7 +185,7 @@ class _MapPageState extends State<MapPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.pauseShipByUserId;
+                        arrayAPI = allShipController.pauseShipByUserId;
                         setMapPins();
                         Navigator.pop(context);
                       });
@@ -194,7 +198,7 @@ class _MapPageState extends State<MapPage> {
                         ),
                         Text(
                           "   Dừng (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.statusID > 3)
                                   .length
@@ -213,7 +217,7 @@ class _MapPageState extends State<MapPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.disShipByUserId;
+                        arrayAPI = allShipController.disShipByUserId;
                         setMapPins();
                         Navigator.pop(context);
                       });
@@ -226,7 +230,7 @@ class _MapPageState extends State<MapPage> {
                         ),
                         Text(
                           "   Mất kết nối (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.statusID == 2)
                                   .length
@@ -245,7 +249,7 @@ class _MapPageState extends State<MapPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.gpsShipByUserId;
+                        arrayAPI = allShipController.gpsShipByUserId;
                         setMapPins();
                         Navigator.pop(context);
                       });
@@ -258,7 +262,7 @@ class _MapPageState extends State<MapPage> {
                         ),
                         Text(
                           "   Mất GPS (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.latitude == 0 &&
                                       AllShipByUserId.longitude == 0)
@@ -342,15 +346,15 @@ class _MapPageState extends State<MapPage> {
   }
 
   void searchMapPins() async {
-    _allShip.arrayAPI = _allShip.allShipByUserId;
+    arrayAPI = allShipController.allShipByUserIdList;
     List<AllShipByUserId> shipByUserId = [];
-    for (int i = 0; i < _allShip.arrayAPI.length; i++) {
-      if (_allShip.arrayAPI[i].tentau == _searchControler.text.toUpperCase()) {
-        shipByUserId.add(_allShip.arrayAPI[i]);
+    for (int i = 0; i < arrayAPI.length; i++) {
+      if (arrayAPI[i].tentau == _searchControler.text.toUpperCase()) {
+        shipByUserId.add(arrayAPI[i]);
       }
     }
     if (shipByUserId.length > 0) {
-      _allShip.arrayAPI = shipByUserId;
+      arrayAPI = shipByUserId;
       SmartDialog.showLoading(
         backDismiss: false,
         msg: "đang tải",
@@ -395,9 +399,8 @@ class _MapPageState extends State<MapPage> {
     getMarker();
   }
 
-  void getMarker() async {
-    await _allShip.getAllShipByUserId();
-    _allShip.arrayAPI = _allShip.allShipByUserId;
+  void getMarker() {
+    arrayAPI = allShipController.allShipByUserIdList;
     setState(() {
       setMapPins();
     });
@@ -409,42 +412,42 @@ class _MapPageState extends State<MapPage> {
     String _pinPath, _avatarPath, _address, _status;
     String _urlMarker = '';
     late Color _labelColor;
-    for (int i = 0; i < _allShip.arrayAPI.length; i++) {
-      if (_allShip.arrayAPI[i].statusID == 3) {
+    for (int i = 0; i < arrayAPI.length; i++) {
+      if (arrayAPI[i].statusID == 3) {
         _urlMarker = filePath.boatGreens;
-      } else if (_allShip.arrayAPI[i].statusID == 2) {
+      } else if (arrayAPI[i].statusID == 2) {
         _urlMarker = filePath.boatRed;
-      } else if (_allShip.arrayAPI[i].statusID > 3) {
+      } else if (arrayAPI[i].statusID > 3) {
         _urlMarker = filePath.boatBlack;
-      } else if (_allShip.arrayAPI[i].latitude == 0 &&
-          _allShip.arrayAPI[i].longitude == 0) {
+      } else if (arrayAPI[i].latitude == 0 &&
+          arrayAPI[i].longitude == 0) {
         _urlMarker = filePath.boatYellow;
       } else {
         _urlMarker = filePath.boatNoActive;
       }
       Marker resultMarker = Marker(
-          markerId: MarkerId(_allShip.arrayAPI[i].imei),
+          markerId: MarkerId(arrayAPI[i].imei),
           position: LatLng(
-              _allShip.arrayAPI[i].latitude, _allShip.arrayAPI[i].longitude),
+              arrayAPI[i].latitude, arrayAPI[i].longitude),
           onTap: () {
             setState(() {
-              if (_allShip.arrayAPI[i].statusID == 3) {
+              if (arrayAPI[i].statusID == 3) {
                 _pinPath = filePath.boatGreens;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.greenAccent;
                 _status = 'Đang hoạt động';
-              } else if (_allShip.arrayAPI[i].statusID == 2) {
+              } else if (arrayAPI[i].statusID == 2) {
                 _pinPath = filePath.boatRed;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.redAccent;
                 _status = 'Mất tính hiệu';
-              } else if (_allShip.arrayAPI[i].statusID > 3) {
+              } else if (arrayAPI[i].statusID > 3) {
                 _pinPath = filePath.boatBlack;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.black;
                 _status = 'Dừng';
-              } else if (_allShip.arrayAPI[i].latitude == 0 &&
-                  _allShip.arrayAPI[i].longitude == 0) {
+              } else if (arrayAPI[i].latitude == 0 &&
+                  arrayAPI[i].longitude == 0) {
                 _pinPath = filePath.boatYellow;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.red;
@@ -456,15 +459,15 @@ class _MapPageState extends State<MapPage> {
                 _status = 'Chưa kích hoạt';
               }
               currentlySelectedPin = PinInformation(
-                vehicalNumber: _allShip.arrayAPI[i].tentau,
-                location: LatLng(_allShip.arrayAPI[i].latitude,
-                    _allShip.arrayAPI[i].longitude),
+                vehicalNumber: arrayAPI[i].tentau,
+                location: LatLng(arrayAPI[i].latitude,
+                    arrayAPI[i].longitude),
                 pinPath: _pinPath,
                 avatarPath: _avatarPath,
                 labelColor: _labelColor,
                 address: "",
                 status: _status,
-                timeSave: _allShip.arrayAPI[i].dateSave.replaceAll('T', ' | '),
+                timeSave: arrayAPI[i].dateSave.replaceAll('T', ' | '),
               );
               pinPillPosition = 0;
             });

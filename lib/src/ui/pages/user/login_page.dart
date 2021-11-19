@@ -1,17 +1,15 @@
-import 'dart:convert';
-import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:sea_demo01/generated/l10n.dart';
 import 'package:sea_demo01/src/blocs/Login/auth_bloc.dart';
-import 'package:sea_demo01/src/repositories/infouser_username.dart';
+import 'package:sea_demo01/src/controller/login_controller.dart';
 import 'package:sea_demo01/src/ui/compoment/compoment.dart';
 import 'package:sea_demo01/src/ui/screen.dart';
 import 'package:sea_demo01/src/ui/themes/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'index.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,12 +23,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   LoginBloc bloc = new LoginBloc();
+  final LoginController controller = Get.put(LoginController());
   TextEditingController _userController = new TextEditingController();
   TextEditingController _passController = new TextEditingController();
   bool _isLoading = false;
   double _headerHeight = 250;
   Key _formKey = GlobalKey<FormState>();
-  InfoUserByUserName _infoUserByUserName = new InfoUserByUserName();
 
   void checkReloadLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -91,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                                     child: StreamBuilder(
                                       stream: bloc.userStream,
                                       builder: (context, snapshot) => TextField(
+                                        enabled: !controller.loginProcess.value,
                                         controller: _userController,
                                         decoration: ThemeHelper()
                                             .textInputDecoration(
@@ -109,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                                     child: StreamBuilder(
                                       stream: bloc.passStream,
                                       builder: (context, snapshot) => TextField(
+                                        enabled: !controller.loginProcess.value,
                                         obscureText: true,
                                         controller: _passController,
                                         decoration: ThemeHelper()
@@ -168,13 +168,36 @@ class _LoginPageState extends State<LoginPage> {
                                               color: Colors.white),
                                         ),
                                       ),
-                                      onPressed: () {
-                                        //After successful login we will redirect to profile page. Let's create profile page now
-                                        setState(() {
-                                          _isLoading = true;
-                                        });
-                                        onSignInClicked(_userController.text,
-                                            _passController.text, 3);
+                                      onPressed: () async {
+                                        String error = await controller.login(UserName: _userController.text,
+                                         PassWord: _passController.text, 
+                                         Type: 3,
+                                        );
+                                        if (error != "") {
+                                          Get.defaultDialog(
+                                              title: "Oop!", middleText: error);
+                                        } else {
+                                          final prefs = await SharedPreferences.getInstance();
+                                          String token = prefs.getString("token").toString();
+                                          if( token == "Unknown Error"){
+                                            Fluttertoast.showToast(
+                                              msg: "Tài khoản hoặc mật khẩu không đúng.\n Vui lòng nhập lại!",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: const Color.fromRGBO(70, 70, 70, 1.0),
+                                              textColor: Colors.white,
+                                              fontSize: 12.0);
+                                          }else{
+                                            SmartDialog.showLoading(
+                                              backDismiss: false,
+                                              msg: 'Đang tải',
+                                            );
+                                            await Future.delayed(const Duration(seconds: 2));
+                                            SmartDialog.dismiss();
+                                            Get.to(const ScreenMain());
+                                          }
+                                        }
                                       },
                                     ),
                                   ),
@@ -211,56 +234,5 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         );
-  }
-
-  Future<void> onSignInClicked(
-      String UserName, String PassWord, int Type) async {
-    if (bloc.isValidInfo(_userController.text, _passController.text)) {
-      var url = Uri.parse('https://i-sea.khanhhoi.net/home/login');
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      final String ip = await Ipify.ipv4().toString();
-      Map<String, String> requestHeaders = {
-        'ClientIP': ip,
-      };
-      Map body = {"UserName_": UserName, "pass_": PassWord, "type_": Type};
-      try {
-        var res = await http.post(url,
-            headers: requestHeaders, body: json.encode(body));
-        if (res.statusCode == 200) {
-          var jsonResponse = json.decode(res.body);
-          if (jsonResponse != null) {
-            setState(() {
-              _isLoading = false;
-            });
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            prefs.setString('token', jsonResponse.toString());
-            prefs.setString('user', UserName.toString());
-            prefs.setString('pass', PassWord.toString());
-            await _infoUserByUserName.getInfoUserByUserName();
-            SmartDialog.showLoading(
-              backDismiss: false,
-              msg: 'Đang tải',
-            );
-            await Future.delayed(Duration(seconds: 2));
-            SmartDialog.dismiss();
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => ScreenMain()));
-          } else {
-            Fluttertoast.showToast(
-                msg: "Tài khoản hoặc mật khẩu không đúng. Vui lòng nhập lại!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Color.fromRGBO(70, 70, 70, 1.0),
-                textColor: Colors.white,
-                fontSize: 12.0);
-          }
-        }
-      } catch (e) {
-        print(e);
-        SmartDialog.showToast("Đường truyền mất kết nối!!!");
-      }
-    }
   }
 }

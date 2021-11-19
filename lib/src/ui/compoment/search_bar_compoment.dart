@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sea_demo01/src/model/shipuser_model.dart';
-import 'package:sea_demo01/src/repositories/all_ship.dart';
 
 class SearchBarCompoemnt extends StatefulWidget {
   const SearchBarCompoemnt({Key? key}) : super(key: key);
@@ -14,7 +13,6 @@ class _SearchBarCompoemntState extends State<SearchBarCompoemnt> {
   List<String>? foodListSearch;
   final FocusNode _textFocusNode = FocusNode();
   TextEditingController? _textEditingController = TextEditingController();
-  AllShip _allShip = new AllShip();
   @override
   void dispose() {
     _textFocusNode.dispose();

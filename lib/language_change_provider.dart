@@ -6,7 +6,7 @@ class LanguageChangeProvider with ChangeNotifier {
   Locale get currentLocale => _currentLocale;
 
   void changeLocale(String _locale) {
-    this._currentLocale = new Locale(_locale);
+    _currentLocale = new Locale(_locale);
     notifyListeners();
   }
 }

@@ -1,4 +1,12 @@
-import 'package:flutter/cupertino.dart';
+
+
+import 'dart:convert';
+
+List<AllShipByUserId> allShipByUserIdFromJson(String str) =>
+    List<AllShipByUserId>.from(json.decode(str).map((x) => AllShipByUserId.fromJson(x)));
+
+String allShipByUserIdToJson(List<AllShipByUserId> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class AllShipByUserId {
   late String imei;

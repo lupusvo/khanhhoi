@@ -4,7 +4,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import 'package:sea_demo01/LanguageChangeProvider.dart';
+import 'package:sea_demo01/language_change_provider.dart';
 import 'package:sea_demo01/generated/l10n.dart';
 import 'package:sea_demo01/src/repositories/search_model.dart';
 import 'ui/compoment/splash_screen.dart';

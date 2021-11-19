@@ -1,4 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
+InfoUser infoUserFromMap(String str) => InfoUser.fromMap(json.decode(str));
+
+String infoUserToMap(InfoUser data) => json.encode(data.toMap());
 
 class InfoUser {
   late int id;
@@ -21,6 +25,8 @@ class InfoUser {
   var resetTokenExpires;
   var verificationToken;
 
+  static var obs;
+
   InfoUser(
       {required this.id,
       required this.userName,
@@ -42,8 +48,7 @@ class InfoUser {
       this.resetTokenExpires,
       this.verificationToken});
   
-  factory InfoUser.fromJson(Map<String, dynamic> json) {
-    return InfoUser(
+  factory InfoUser.fromMap(Map<String, dynamic> json) => InfoUser(
       id : json['id'],
       userName : json['userName'],
       nPassword : json['_Password'],
@@ -64,5 +69,26 @@ class InfoUser {
       resetTokenExpires : json['resetTokenExpires'],
       verificationToken : json['verificationToken'],
     );
-  }
+  
+  Map<String, dynamic> toMap() => {
+    "id": id == null ? null : id,
+    "userName": userName == null ? null : userName,
+    "_Password": nPassword == null ? null : nPassword,
+    "fullName": fullName == null ? null : fullName,
+    "idCard": idCard == null ? null : idCard,
+    "sex": sex == null ? null : sex,
+    "email": email == null ? null : email,
+    "birthday": birthday,
+    "numberPhone": numberPhone == null ? null : numberPhone,
+    "dateCreate": dateCreate == null ? null : dateCreate,
+    "createBy": createBy == null ? null : createBy,
+    "image": image == null ? null : image,
+    "roleId": roleId == null ? null : roleId,
+    "isActive": isActive == null ? null : isActive,
+    "address_": address == null ? null : address,
+    "passwordReset": passwordReset == null ? null : passwordReset,
+    "resetToken": resetToken == null ? null : resetToken,
+    "resetTokenExpires": resetTokenExpires == null ? null : resetTokenExpires,
+    "verificationToken": verificationToken == null ? null : verificationToken,
+  };
 }

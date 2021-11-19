@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
+import 'package:sea_demo01/src/controller/allship_controller.dart';
+import 'package:sea_demo01/src/controller/user_controller.dart';
 import 'package:sea_demo01/src/model/pin_pill_info.dart';
 import 'package:sea_demo01/src/model/shipuser_model.dart';
-import 'package:sea_demo01/src/repositories/all_ship.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
 import 'package:sea_demo01/src/ui/themes/path_files.dart';
@@ -20,8 +22,11 @@ class MapBoxPage extends StatefulWidget {
 }
 
 class _MapBoxPageState extends State<MapBoxPage> {
-  AllShip _allShip = new AllShip();
+  InfoUserController infoUserController = Get.put(InfoUserController());
+  AllShipController allShipController = Get.put(AllShipController());
+  //AllShip _allShip = new AllShip();
   TextEditingController _searchControler = new TextEditingController();
+  List<AllShipByUserId> arrayAPI = [];
   List<Marker> _markers = [];
   List<latLng.LatLng> polylineCoordinates = [];
   double pinPillPosition = -120;
@@ -79,7 +84,7 @@ class _MapBoxPageState extends State<MapBoxPage> {
                 contentPadding: EdgeInsets.all(8)),
             onChanged: (value) {
               setState(() {
-                foodList = _allShip.shipList;
+                foodList = allShipController.shipList;
                 foodListSearch = foodList
                     .where((element) => element.contains(value.toLowerCase()))
                     .toList();
@@ -112,9 +117,9 @@ class _MapBoxPageState extends State<MapBoxPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.allShipByUserId;
+                        arrayAPI = allShipController.allShipByUserIdList;
                         setMapPins();
-                        handleTap();
+                        Navigator.pop(context);
                       });
                     },
                     child: Row(
@@ -125,7 +130,7 @@ class _MapBoxPageState extends State<MapBoxPage> {
                         ),
                         Text(
                           "   Tất cả xe (" +
-                              _allShip.allShipByUserId.length.toString() +
+                              arrayAPI.length.toString() +
                               ")",
                           style:
                               const TextStyle(color: Colors.blue, fontSize: 16),
@@ -141,9 +146,9 @@ class _MapBoxPageState extends State<MapBoxPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.runingShipByUserId;
+                        arrayAPI = allShipController.runingShipByUserId;
                         setMapPins();
-                        handleTap();
+                        Navigator.pop(context);
                       });
                     },
                     child: Row(
@@ -154,7 +159,7 @@ class _MapBoxPageState extends State<MapBoxPage> {
                         ),
                         Text(
                           "   Đang chạy (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.statusID == 3)
                                   .length
@@ -173,9 +178,9 @@ class _MapBoxPageState extends State<MapBoxPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.pauseShipByUserId;
+                        arrayAPI = allShipController.pauseShipByUserId;
                         setMapPins();
-                        handleTap();
+                        Navigator.pop(context);
                       });
                     },
                     child: Row(
@@ -186,7 +191,7 @@ class _MapBoxPageState extends State<MapBoxPage> {
                         ),
                         Text(
                           "   Dừng (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.statusID > 3)
                                   .length
@@ -205,9 +210,9 @@ class _MapBoxPageState extends State<MapBoxPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.disShipByUserId;
+                        arrayAPI = allShipController.disShipByUserId;
                         setMapPins();
-                        handleTap();
+                        Navigator.pop(context);
                       });
                     },
                     child: Row(
@@ -218,7 +223,7 @@ class _MapBoxPageState extends State<MapBoxPage> {
                         ),
                         Text(
                           "   Mất kết nối (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.statusID == 2)
                                   .length
@@ -237,9 +242,9 @@ class _MapBoxPageState extends State<MapBoxPage> {
                     onPressed: () {
                       setState(() {
                         pinPillPosition = -120;
-                        _allShip.arrayAPI = _allShip.gpsShipByUserId;
+                        arrayAPI = allShipController.gpsShipByUserId;
                         setMapPins();
-                        handleTap();
+                        Navigator.pop(context);
                       });
                     },
                     child: Row(
@@ -250,7 +255,7 @@ class _MapBoxPageState extends State<MapBoxPage> {
                         ),
                         Text(
                           "   Mất GPS (" +
-                              _allShip.allShipByUserId
+                              allShipController.allShipByUserIdList
                                   .where((AllShipByUserId) =>
                                       AllShipByUserId.latitude == 0 &&
                                       AllShipByUserId.longitude == 0)
@@ -280,10 +285,13 @@ class _MapBoxPageState extends State<MapBoxPage> {
                   options: MapOptions(
                     center: latLng.LatLng(10.7553411, 106.4150405),
                     zoom: 6,
-                    onTap: (context, latLng.LatLng location) {
+                    onTap: (ctx, latLng.LatLng location) {
                       setState(() {
                         pinPillPosition = -120;
-                        handleKeybroad();
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
                       });
                     },
                   ),
@@ -342,42 +350,25 @@ class _MapBoxPageState extends State<MapBoxPage> {
     super.initState();
     getMarker();
   }
-
-  void handleTap() {
-    Navigator.pop(context);
-  }
-
-  void handleKeybroad() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
-  }
-
-  void clearData() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
-    exit(0);
-  }
-
-  void getMarker() async {
-    await _allShip.getAllShipByUserId();
-    _allShip.arrayAPI = _allShip.allShipByUserId;
+  
+  void getMarker(){
+    arrayAPI = allShipController.allShipByUserIdList;
     setState(() {
       setMapPins();
     });
   }
 
+
   void searchMapPins() async {
-    _allShip.arrayAPI = _allShip.allShipByUserId;
+    arrayAPI = allShipController.allShipByUserIdList;
     List<AllShipByUserId> shipByUserId = [];
-    for (int i = 0; i < _allShip.arrayAPI.length; i++) {
-      if (_allShip.arrayAPI[i].tentau == _searchControler.text.toUpperCase()) {
-        shipByUserId.add(_allShip.arrayAPI[i]);
+    for (int i = 0; i < arrayAPI.length; i++) {
+      if (arrayAPI[i].tentau == _searchControler.text.toUpperCase()) {
+        shipByUserId.add(arrayAPI[i]);
       }
     }
     if (shipByUserId.length > 0) {
-      _allShip.arrayAPI = shipByUserId;
+      arrayAPI = shipByUserId;
       SmartDialog.showLoading(
         backDismiss: false,
         msg: "đang tải",
@@ -388,7 +379,10 @@ class _MapBoxPageState extends State<MapBoxPage> {
         _searchControler.text = "";
         pinPillPosition = -120;
         setMapPins();
-        handleKeybroad();
+       FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
       });
     }
   }
@@ -398,15 +392,15 @@ class _MapBoxPageState extends State<MapBoxPage> {
     String _pinPath, _avatarPath, _address, _status;
     String? _urlMarker = '';
     late Color _labelColor;
-    for (int i = 0; i < _allShip.arrayAPI.length; i++) {
-      if (_allShip.arrayAPI[i].statusID == 3) {
+    for (int i = 0; i < arrayAPI.length; i++) {
+      if (arrayAPI[i].statusID == 3) {
         _urlMarker = filePath.boatGreens;
-      } else if (_allShip.arrayAPI[i].statusID == 2) {
+      } else if (arrayAPI[i].statusID == 2) {
         _urlMarker = filePath.boatRed;
-      } else if (_allShip.arrayAPI[i].statusID > 3) {
+      } else if (arrayAPI[i].statusID > 3) {
         _urlMarker = filePath.boatBlack;
-      } else if (_allShip.arrayAPI[i].latitude == 0 &&
-          _allShip.arrayAPI[i].longitude == 0) {
+      } else if (arrayAPI[i].latitude == 0 &&
+          arrayAPI[i].longitude == 0) {
         _urlMarker = filePath.boatYellow;
       } else {
         _urlMarker = filePath.boatNoActive;
@@ -416,28 +410,28 @@ class _MapBoxPageState extends State<MapBoxPage> {
         width: 70.0,
         height: 70.0,
         point: latLng.LatLng(
-            _allShip.arrayAPI[i].latitude, _allShip.arrayAPI[i].longitude),
+            arrayAPI[i].latitude, arrayAPI[i].longitude),
         builder: (ctx) => Container(
             child: FlatButton(
           onPressed: () {
             setState(() {
-              if (_allShip.arrayAPI[i].statusID == 3) {
+              if (arrayAPI[i].statusID == 3) {
                 _pinPath = filePath.boatGreens;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.greenAccent;
                 _status = 'Đang hoạt động';
-              } else if (_allShip.arrayAPI[i].statusID == 2) {
+              } else if (arrayAPI[i].statusID == 2) {
                 _pinPath = filePath.boatRed;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.redAccent;
                 _status = 'Mất tính hiệu';
-              } else if (_allShip.arrayAPI[i].statusID > 3) {
+              } else if (arrayAPI[i].statusID > 3) {
                 _pinPath = filePath.boatBlack;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.black;
                 _status = 'Dừng';
-              } else if (_allShip.arrayAPI[i].latitude == 0 &&
-                  _allShip.arrayAPI[i].longitude == 0) {
+              } else if (arrayAPI[i].latitude == 0 &&
+                  arrayAPI[i].longitude == 0) {
                 _pinPath = filePath.boatYellow;
                 _avatarPath = filePath.personOne;
                 _labelColor = Colors.red;
@@ -449,15 +443,15 @@ class _MapBoxPageState extends State<MapBoxPage> {
                 _status = 'Chưa kích hoạt';
               }
               currentlySelectedPin = PinInformation(
-                vehicalNumber: _allShip.arrayAPI[i].tentau,
-                location: latLng.LatLng(_allShip.arrayAPI[i].latitude,
-                    _allShip.arrayAPI[i].longitude),
+                vehicalNumber: arrayAPI[i].tentau,
+                location: latLng.LatLng(arrayAPI[i].latitude,
+                    arrayAPI[i].longitude),
                 pinPath: _pinPath,
                 avatarPath: _avatarPath,
                 labelColor: _labelColor,
                 address: "",
                 status: _status,
-                timeSave: _allShip.arrayAPI[i].dateSave.replaceAll('T', ' | '),
+                timeSave: arrayAPI[i].dateSave.replaceAll('T', ' | '),
               );
               pinPillPosition = 0;
             });
