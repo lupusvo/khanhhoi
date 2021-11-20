@@ -1,18 +1,15 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:sea_demo01/src/controller/allship_controller.dart';
-import 'package:sea_demo01/src/controller/user_controller.dart';
 import 'package:sea_demo01/src/model/pin_pill_info.dart';
 import 'package:sea_demo01/src/model/shipuser_model.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:sea_demo01/src/ui/compoment/map_pin_pill.dart';
 import 'package:sea_demo01/src/ui/themes/path_files.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MapBoxPage extends StatefulWidget {
   const MapBoxPage({Key? key}) : super(key: key);
@@ -22,7 +19,6 @@ class MapBoxPage extends StatefulWidget {
 }
 
 class _MapBoxPageState extends State<MapBoxPage> {
-  InfoUserController infoUserController = Get.put(InfoUserController());
   AllShipController allShipController = Get.put(AllShipController());
   //AllShip _allShip = new AllShip();
   TextEditingController _searchControler = new TextEditingController();
@@ -348,10 +344,6 @@ class _MapBoxPageState extends State<MapBoxPage> {
   @override
   void initState() {
     super.initState();
-    getMarker();
-  }
-  
-  void getMarker(){
     arrayAPI = allShipController.allShipByUserIdList;
     setState(() {
       setMapPins();

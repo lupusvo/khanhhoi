@@ -4,6 +4,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:sea_demo01/generated/l10n.dart';
+import 'package:sea_demo01/src/Services/cqapi.dart';
 import 'package:sea_demo01/src/blocs/Login/auth_bloc.dart';
 import 'package:sea_demo01/src/controller/login_controller.dart';
 import 'package:sea_demo01/src/ui/compoment/compoment.dart';
@@ -169,33 +170,39 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                       ),
                                       onPressed: () async {
-                                        String error = await controller.login(UserName: _userController.text,
-                                         PassWord: _passController.text, 
-                                         Type: 3,
-                                        );
-                                        if (error != "") {
-                                          Get.defaultDialog(
-                                              title: "Oop!", middleText: error);
-                                        } else {
-                                          final prefs = await SharedPreferences.getInstance();
-                                          String token = prefs.getString("token").toString();
-                                          if( token == "Unknown Error"){
-                                            Fluttertoast.showToast(
-                                              msg: "Tài khoản hoặc mật khẩu không đúng.\n Vui lòng nhập lại!",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: const Color.fromRGBO(70, 70, 70, 1.0),
-                                              textColor: Colors.white,
-                                              fontSize: 12.0);
-                                          }else{
-                                            SmartDialog.showLoading(
-                                              backDismiss: false,
-                                              msg: 'Đang tải',
-                                            );
-                                            await Future.delayed(const Duration(seconds: 2));
-                                            SmartDialog.dismiss();
-                                            Get.to(const ScreenMain());
+                                        if(bloc.isValidInfo(_userController.text, _passController.text)){
+                                          String error = await controller.login(UserName: _userController.text,
+                                          PassWord: _passController.text, 
+                                          Type: 3,
+                                          );
+                                          if (error != "") {
+                                            Get.defaultDialog(
+                                                title: "Oop!", middleText: error);
+                                          } else {
+                                            if(controller.token == "Unknown Error"){
+                                              Fluttertoast.showToast(
+                                                msg: "Tài khoản hoặc mật khẩu không đúng.\n Vui lòng nhập lại!",
+                                                toastLength: Toast.LENGTH_SHORT,
+                                                gravity: ToastGravity.BOTTOM,
+                                                timeInSecForIosWeb: 1,
+                                                backgroundColor: const Color.fromRGBO(70, 70, 70, 1.0),
+                                                textColor: Colors.white,
+                                                fontSize: 12.0);
+                                            }else{
+                                              try{
+                                                await CQAPI.getInfoUserByUserName();
+                                                SmartDialog.showLoading(
+                                                  backDismiss: false,
+                                                  msg: 'Đang tải',
+                                                );
+                                                await Future.delayed(const Duration(seconds: 2));
+                                                SmartDialog.dismiss();
+                                                Get.to(const ScreenMain());
+                                              }catch(e){
+                                                SmartDialog.showToast(e.toString());
+                                              }
+                                              
+                                            }
                                           }
                                         }
                                       },

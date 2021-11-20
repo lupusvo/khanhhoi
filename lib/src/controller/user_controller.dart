@@ -1,11 +1,13 @@
 import 'package:get/state_manager.dart';
 import 'package:sea_demo01/src/Services/cqapi.dart';
-import 'package:sea_demo01/src/model/infouser_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class InfoUserController extends GetxController {
   var isLoading = true.obs;
-  var userData = InfoUser.obs;
+  String fullName = "";
+  String userName = "";
+  String address = "";
+  String email = "";
+  String numberPhone = "";
 
   @override
   void onInit() {
@@ -18,9 +20,12 @@ class InfoUserController extends GetxController {
       isLoading(true);
       var userInfo = await CQAPI.getInfoUserByUserName();
       if (userInfo != null) {
-        userData = userInfo;
-        final pref = await SharedPreferences.getInstance();
-        pref.setString("idUser", userData.id.toString());
+         fullName = userInfo.fullName;
+         userName = userInfo.userName;
+         address = userInfo.address;
+         email = userInfo.email;
+         numberPhone = userInfo.numberPhone;
+
       }
     } finally {
       isLoading(false);

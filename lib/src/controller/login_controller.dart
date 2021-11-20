@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginController extends GetxController {
   var loginProcess = false.obs;
   var error = "";
+  String token = "";
   Future<String> login({required String UserName, required String PassWord,required int Type}) async {
     error = "";
     try {
@@ -12,10 +13,11 @@ class LoginController extends GetxController {
       List loginResp = await CQAPI.login(UserName: UserName, PassWord: PassWord, Type: Type);
       if (loginResp[0] != "") {
         //success
-        String token = loginResp[0];
+        token = loginResp[0];
         final prefs = await SharedPreferences.getInstance();
         prefs.setString("token", token.replaceAll('"',''));
-        prefs.setString("username", UserName);
+        prefs.setString('user', UserName);
+        prefs.setString('pass', PassWord);
       } else {
         error = loginResp[1];
       }
