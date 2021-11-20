@@ -7,6 +7,7 @@ import 'package:sea_demo01/generated/l10n.dart';
 import 'package:sea_demo01/src/Services/cqapi.dart';
 import 'package:sea_demo01/src/blocs/Login/auth_bloc.dart';
 import 'package:sea_demo01/src/controller/login_controller.dart';
+import 'package:sea_demo01/src/controller/user_controller.dart';
 import 'package:sea_demo01/src/ui/compoment/compoment.dart';
 import 'package:sea_demo01/src/ui/screen.dart';
 import 'package:sea_demo01/src/ui/themes/index.dart';
@@ -190,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 fontSize: 12.0);
                                             }else{
                                               try{
-                                                await CQAPI.getInfoUserByUserName();
+                                                await CQAPI.getInfoUserByUserName(controller.token, _userController.text);
                                                 SmartDialog.showLoading(
                                                   backDismiss: false,
                                                   msg: 'Đang tải',

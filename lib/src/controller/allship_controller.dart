@@ -1,6 +1,7 @@
 import 'package:get/state_manager.dart';
 import 'package:sea_demo01/src/Services/cqapi.dart';
 import 'package:sea_demo01/src/model/shipuser_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AllShipController extends GetxController {
   var isLoading = true.obs;
@@ -20,10 +21,12 @@ class AllShipController extends GetxController {
   void fetchAllShipByUser() async {
     try {
       isLoading(true);
-      var allShip = await CQAPI.getAllShipByUserId();
+      final prefs = await SharedPreferences.getInstance();
+      String apiKey = prefs.getString('token').toString();
+      String id = prefs.getString('userId').toString();
+      var allShip = await CQAPI.getAllShipByUserId(apiKey,id);
       if (allShip != null) {
-        allShipByUserIdList.value = allShip;
-        
+        allShipByUserIdList.value = allShip;    
         for(int i = 0;i < allShip.length;i++){
           shipList.add(allShip[i].tentau);
           if(allShip[i].statusID == 3){

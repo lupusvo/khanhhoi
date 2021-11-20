@@ -20,7 +20,7 @@ class CQAPI {
     Map body = {"UserName_": UserName, "pass_": PassWord, "type_": Type};
     var response = await client.post(uri,
         headers: <String, String>{
-          'ClientIP': '192.168.2.54', // Ipify.ipv4().toString()
+          'ClientIP': ip, // Ipify.ipv4().toString()
         },
         body: convert.json.encode(body));
     if (response.statusCode == 200) {
@@ -42,35 +42,29 @@ class CQAPI {
     }
   }
 
-  static Future<InfoUser> getInfoUserByUserName() async {
-      final prefs = await SharedPreferences.getInstance();
-      String apiKey = prefs.getString('token').toString();
-      String username = prefs.getString('user').toString();
+  static Future<InfoUser> getInfoUserByUserName(String token,String username) async {
       var url = Uri.parse(_baseURL+"/api/user/getInfobyUsername/"+username.toString());
       Map<String, String> requestHeaders = {
-        'ClientIP': '192.168.2.54',//Ipify.ipv4().toString().trim(),
-        'ApiKey': apiKey.trim(),
+        'ClientIP': ip.trim(),
+        'ApiKey': token.trim(),
       };
       final response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
         var jsonResponse = response.body;
         InfoUser infoUser = infoUserFromMap(jsonResponse);
-        final pref = await SharedPreferences.getInstance();
-        pref.setString("idUser", infoUser.id.toString());
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("userId",infoUser.id.toString());
         return infoUser;
       } else {
         throw Exception('Failed to load info user');
       }
     }
 
-  static Future<List<AllShipByUserId>> getAllShipByUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    String apiKey = prefs.getString('token').toString();
-    String id = prefs.getString('idUser').toString();
+  static Future<List<AllShipByUserId>> getAllShipByUserId(String token,String id) async {
     var url = Uri.parse(_baseURL+"/api/Ship/getAllship/"+ id.toString());
     Map<String, String> requestHeaders = {
-      'ClientIP': '192.168.2.54',//Ipify.ipv4().toString()
-      'ApiKey': apiKey.trim()
+      'ClientIP': ip.trim(),
+      'ApiKey': token.trim()
     };
     var response = await http.get(url, headers: requestHeaders);
     if (response.statusCode == 200) {
